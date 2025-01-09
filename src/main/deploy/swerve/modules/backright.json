@@ -1,0 +1,27 @@
+{
+  "location": {
+    "front": -10.5,
+    "left": -10.5
+  },
+  "drive": {
+    "type": "sparkmax",
+    "id": 5,
+    "canbus": "rio"
+  },
+  "angle": {
+    "type": "sparkmax",
+    "id": 11,
+    "canbus": "rio"
+  },
+  "encoder": {
+    "type": "canandmag",
+    "id": 11,
+    "canbus": "rio"
+  },
+  "absoluteEncoderOffset": 0.0,
+  "inverted": {
+    "drive": true,
+    "angle": true
+  },
+  "absoluteEncoderInverted": true
+}
