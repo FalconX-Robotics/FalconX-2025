@@ -17,7 +17,7 @@ public class Arm extends SubsystemBase {
 
         m_armEncoder = armMotor.getEncoder();
         /**TODO: get the thing to put into the conversion */
-        m_armEncoder.getPositionConversionFactor();
+        m_armEncoder.setPositionConversionFactor(-1.0);
     }
 
    
