@@ -117,6 +117,7 @@ public class RobotContainer
    */
   private void configureBindings()
   {
+    
     m_settings.armSettings.grabButton.whileTrue(
       new Grab(m_intake, 0.5)
     );
@@ -124,7 +125,7 @@ public class RobotContainer
     m_settings.armSettings.releaseButton.whileTrue(
       new Grab(m_intake, -0.5)
     );
-    
+
     if (DriverStation.isTest())
     {
       driverXbox.b().whileTrue(drivebase.sysIdDriveMotorCommand());
