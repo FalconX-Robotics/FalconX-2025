@@ -12,14 +12,17 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Grab;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.encoders.SwerveAbsoluteEncoder;
 
@@ -32,7 +35,12 @@ import java.io.File;
  */
 public class RobotContainer
 {
-  Settings m_settings;
+  private final XboxController driveController = new XboxController(0);
+  private final XboxController armController = new XboxController(1);
+
+  private final Settings m_settings = new Settings(driveController, armController);
+  private final Intake m_intake = new Intake();
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
@@ -109,6 +117,14 @@ public class RobotContainer
    */
   private void configureBindings()
   {
+    m_settings.armSettings.grabButton.whileTrue(
+      new Grab(m_intake, 0.5)
+    );
+
+    m_settings.armSettings.releaseButton.whileTrue(
+      new Grab(m_intake, -0.5)
+    );
+    
     if (DriverStation.isTest())
     {
       driverXbox.b().whileTrue(drivebase.sysIdDriveMotorCommand());

@@ -19,9 +19,10 @@ public class Settings {
     }
     /**Controller bindings and such for controlling arm and arm adjacent parts (eg:intake and elevator) */
     public class ArmSettings {
-        public Trigger intakeButton     = new JoystickButton(m_armController, Button.kA.value);
-        public Trigger lowerArmButton   = new JoystickButton(m_armController, Button.kB.value);
-        public Trigger upperArmButton   = new JoystickButton(m_armController, Button.kX.value);
+        public Trigger grabButton       = new JoystickButton(m_armController, Button.kA.value);
+        public Trigger armAngleButton   = new JoystickButton(m_armController, Button.kB.value);
+        public Trigger releaseButton    = new JoystickButton(m_armController, Button.kX.value);
+        
         
     }
 }

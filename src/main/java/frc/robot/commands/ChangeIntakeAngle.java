@@ -16,12 +16,12 @@ public class ChangeIntakeAngle extends Command {
 
     @Override
     public void execute() {
-        m_arm.setUpperArmMotor(velocity);
+        m_arm.setArmMotor(velocity);
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_arm.setUpperArmMotor(0);
+        m_arm.setArmMotor(0);
     }
 }
 

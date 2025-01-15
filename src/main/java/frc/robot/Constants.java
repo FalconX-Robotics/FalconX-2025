@@ -29,6 +29,9 @@ public final class Constants
   public static final double MAX_SPEED  = Units.feetToMeters(1);
   public static final double MAX_INTAKE_SPEED = 1.0;
   public static final double MAX_RELEASE_SPEED = -1.0;
+  public static final double MAX_ANGLE_UP_SPEED = 1.0;
+  public static final double MAX_ANGLE_DOWN_SPEED = -1.0;
+
       // Maximum speed of the robot in meters per second, used to limit acceleration.
 
   public static final class AutonConstants
