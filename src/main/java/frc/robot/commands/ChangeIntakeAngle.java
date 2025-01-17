@@ -7,21 +7,21 @@ public class ChangeIntakeAngle extends Command {
     Arm m_arm;
     double velocity;
 
-    public ChangeIntakeAngle(Arm arm, double velocity) {
-        m_arm = arm;
-        this.velocity = velocity;
+    // public ChangeIntakeAngle(Arm arm, double velocity) {
+    //     m_arm = arm;
+    //     this.velocity = velocity;
 
-        addRequirements(arm);
-    }
+    //     addRequirements(arm);
+    // }
 
-    @Override
-    public void execute() {
-        m_arm.setArmMotor(velocity);
-    }
+    // @Override
+    // public void execute() {
+    //     m_arm.setArmMotor(velocity);
+    // }
 
-    @Override
-    public void end(boolean interrupted) {
-        m_arm.setArmMotor(0);
-    }
+    // @Override
+    // public void end(boolean interrupted) {
+    //     m_arm.setArmMotor(0);
+    // }
 }
 

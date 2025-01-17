@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Grab;
+import frc.robot.commands.Release;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.Intake;
@@ -123,7 +124,7 @@ public class RobotContainer
     );
 
     m_settings.armSettings.releaseButton.whileTrue(
-      new Grab(m_intake, -0.5)
+      new Release(m_intake, -0.5)
     );
 
     if (DriverStation.isTest())
