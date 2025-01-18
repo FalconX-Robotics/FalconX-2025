@@ -7,6 +7,7 @@ package frc.robot.commands.swervedrive.drivebase;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -71,6 +72,7 @@ public class AbsoluteDrive extends Command
   {
 
     // Get the desired chassis speeds based on a 2 joystick module.
+    
     ChassisSpeeds desiredSpeeds = swerve.getTargetSpeeds(vX.getAsDouble(), vY.getAsDouble(),
                                                          headingHorizontal.getAsDouble(),
                                                          headingVertical.getAsDouble());
@@ -89,19 +91,22 @@ public class AbsoluteDrive extends Command
       //Dont Init Rotation Again
       initRotation = false;
     }
-
+    
+    
     // Limit velocity to prevent tippy
     Translation2d translation = SwerveController.getTranslation2d(desiredSpeeds);
-    
-    // translation = SwerveMath.limitVelocity(translation, swerve.getFieldVelocity(), swerve.getPose(),
-    //                                        Constants.LOOP_TIME, Constants.ROBOT_MASS, List.of(Constants.CHASSIS),
-    //                                        swerve.getSwerveDriveConfiguration());
+     
+    translation = SwerveMath.limitVelocity(translation, swerve.getFieldVelocity(), swerve.getPose(),
+                                           Constants.LOOP_TIME, Constants.ROBOT_MASS, List.of(Constants.CHASSIS),
+                                           swerve.getSwerveDriveConfiguration());
     SmartDashboard.putNumber("LimitedTranslation", translation.getX());
     SmartDashboard.putString("Translation", translation.toString());
 
-    System.out.println(translation);
-    translation = translation.div(7);
+    // System.out.println(translation);
+    // translation = translation;
     // Make the robot move
+    System.out.println("Desired Speeds: " + desiredSpeeds);
+    System.out.println("Translation: " + translation);
     swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true);
 
   }

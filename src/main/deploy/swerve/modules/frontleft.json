@@ -5,17 +5,17 @@
   },
   "drive": {
     "type": "sparkmax",
-    "id": 12,
+    "id": 14,
     "canbus": "rio"
   },
   "angle": {
     "type": "sparkmax",
-    "id": 2,
+    "id": 15,
     "canbus": "rio"
   },
   "encoder": {
     "type": "canandmag",
-    "id": 2,
+    "id": 15,
     "canbus": "rio"
   },
   "absoluteEncoderOffset": 0.0,

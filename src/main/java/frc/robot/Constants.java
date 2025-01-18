@@ -4,8 +4,10 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.util.PIDConstants;
 
+import com.pathplanner.lib.config.PIDConstants;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -24,7 +26,10 @@ public final class Constants
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
-  public static final double MAX_SPEED  = Units.feetToMeters(1);
+  public static final double MAX_SPEED  = Units.feetToMeters(22);
+  public static final double MAX_ANGULAR_VELOCITY = 2 * Math.PI;
+
+  public static final Pose2d START_POSE = new Pose2d();
       // Maximum speed of the robot in meters per second, used to limit acceleration.
 
   public static final class AutonConstants
@@ -45,6 +50,8 @@ public final class Constants
   {
 
     // Joystick Deadband
+    
+
     public static final double LEFT_X_DEADBAND  = 0.1;
     public static final double LEFT_Y_DEADBAND  = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
@@ -53,12 +60,12 @@ public final class Constants
 }
 /**
  * PDH 1
- * BR Drive 5
- * BL Angle 6
- * BL Drive 7
- * FL Angle 2
- * FL Drive 12
+ * BR Drive 10
+ * BL Angle 17
+ * BL Drive 16
+ * FL Angle 15
+ * FL Drive 14
  * BR Angle 11
- * FR Angle 10
- * FR Drive 8 
+ * FR Angle 13
+ * FR Drive 12
  */
