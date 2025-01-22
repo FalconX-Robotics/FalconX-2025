@@ -4,8 +4,10 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.util.PIDConstants;
 
+import com.pathplanner.lib.config.PIDConstants;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -25,7 +27,7 @@ public final class Constants
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(1);
-      // Maximum speed of the robot in meters per second, used to limit acceleration.
+  public static final Pose2d START_POSE = new Pose2d();
 
   public static final class AutonConstants
   {
