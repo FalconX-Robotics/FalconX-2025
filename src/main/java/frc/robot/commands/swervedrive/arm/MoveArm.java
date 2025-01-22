@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
-public class ArmCommand extends Command {
+public class MoveArm extends Command {
   Arm arm;
   DigitalInput digitalInput = new DigitalInput( 1 );
 
   /** Creates a new Arm. */
-  public ArmCommand( Arm arm ) {
+  public MoveArm( Arm arm ) {
     this.arm = arm;
 
     addRequirements( arm ); 
@@ -34,7 +34,7 @@ public class ArmCommand extends Command {
     final double clawRadius = Constants.CLAW_RADIUS;
 
     // Define the acceleration due to gravity.
-    final float gravityAccel = -9.8f;
+    final double gravityAccel = -9.8;
 
     // Calculate the torque.
     double gravityTorque = gravityAccel * clawMass * clawRadius * Math.cos( Units.degreesToRadians( clawAngle ) );
