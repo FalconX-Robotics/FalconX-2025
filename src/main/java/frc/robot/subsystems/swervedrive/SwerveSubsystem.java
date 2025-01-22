@@ -13,6 +13,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -173,12 +174,20 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Setup AutoBuilder for PathPlanner.
    */
+  /**
+   * Setup AutoBuilder for PathPlanner.
+   */
   public void setupPathPlanner()
   {
-    try {
-      RobotConfig config = RobotConfig.fromGUISettings();
+    // Load the RobotConfig from the GUI settings. You should probably
+    // store this in your Constants file
+    RobotConfig config;
+    try
+    {
+      config = RobotConfig.fromGUISettings();
+
       final boolean enableFeedforward = true;
-      
+      // Configure AutoBuilder last
       AutoBuilder.configure(
           this::getPose,
           // Robot pose supplier
@@ -193,7 +202,7 @@ public class SwerveSubsystem extends SubsystemBase
                   speedsRobotRelative,
                   swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
                   moduleFeedForwards.linearForces()
-                                );
+                               );
             } else
             {
               swerveDrive.setChassisSpeeds(speedsRobotRelative);
@@ -213,6 +222,28 @@ public class SwerveSubsystem extends SubsystemBase
             // Boolean supplier that controls when the path will be mirrored for the red alliance
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent())
+            {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+          },
+          this
+          // Reference to this subsystem to set requirements
+                           );
+
+    } catch (Exception e)
+    {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+
+    //Preload PathPlanner Path finding
+    // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
+    PathfindingCommand.warmupCommand().schedule();
+  }
 
             var alliance = DriverStation.getAlliance();
             if (alliance.isPresent())
@@ -279,7 +310,8 @@ public class SwerveSubsystem extends SubsystemBase
     return AutoBuilder.pathfindToPose(
         pose,
         constraints,
-        edu.wpi.first.units.Units.MetersPerSecond.of(0)
+        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
+         // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
                                      );
   }
 
@@ -338,13 +370,12 @@ System.out.println("velocity" + getFieldVelocity());
    */
   public Command sysIdDriveMotorCommand()
   {
-    return Commands.none();
-    // return SwerveDriveTest.generateSysIdCommand(
-    //     SwerveDriveTest.setDriveSysIdRoutine(
-    //         new Config(),
-    //         this, swerveDrive, 12),
-    //     3.0, 5.0, 3.0);
-  }
+    return Commands.none (); 
+  //       SwerveDriveTest.setDriveSysIdRoutine(
+  //           new Config(),
+  //           this, swerveDrive, 12),
+  //       3.0, 5.0, 3.0);
+   }
 
   /**
    * Command to characterize the robot angle motors using SysId
@@ -389,7 +420,14 @@ System.out.println("velocity" + getFieldVelocity());
                       .until(() -> swerveDrive.getPose().getTranslation().getDistance(new Translation2d(0, 0)) >
                                    distanceInMeters)
                                  );
-}
+  }
+
+  /**
+   * Sets the maximum speed of the swerve drive.
+   *
+   * @param maximumSpeedInMetersPerSecond the maximum speed to set for the swerve drive in meters per second
+   */
+  
 
   /**
    * Replaces the swerve module feedforward with a new SimpleMotorFeedforward object.
@@ -418,7 +456,7 @@ System.out.println("velocity" + getFieldVelocity());
       swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
                             translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
                             translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()), 0.8),
-                            Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
+                        Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
                         true,
                         false);
       //System.out.println(getRobotVelocity().omegaRadiansPerSecond);
