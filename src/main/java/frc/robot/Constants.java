@@ -47,6 +47,8 @@ public final class Constants
   {
 
     // Joystick Deadband
+    
+
     public static final double LEFT_X_DEADBAND  = 0.1;
     public static final double LEFT_Y_DEADBAND  = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
@@ -55,12 +57,12 @@ public final class Constants
 }
 /**
  * PDH 1
- * BR Drive 5
- * BL Angle 6
- * BL Drive 7
- * FL Angle 2
- * FL Drive 12
+ * BR Drive 10
+ * BL Angle 17
+ * BL Drive 16
+ * FL Angle 15
+ * FL Drive 14
  * BR Angle 11
- * FR Angle 10
- * FR Drive 8 
+ * FR Angle 13
+ * FR Drive 12
  */
