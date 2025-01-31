@@ -31,9 +31,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -70,7 +67,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * AprilTag field layout.
    */
-  private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+  private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   /**
    * Enable vision odometry updates while driving.
    */
@@ -78,9 +75,6 @@ public class SwerveSubsystem extends SubsystemBase
 
   public SwerveDrive getSwerveDrive() {return swerveDrive;}
 
-  // private DataLog dataLog = DataLogManager.getLog();
-  // private DoubleLogEntry xVelocityLog;
-  // private DoubleLogEntry yVelocityLog;
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -105,10 +99,10 @@ public class SwerveSubsystem extends SubsystemBase
     
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.MACHINE;
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
     {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, Constants.START_POSE);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED);
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
@@ -154,10 +148,6 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void periodic()
   {
-    SmartDashboard.putNumber("Y velocity", getRobotVelocity().vyMetersPerSecond);
-    SmartDashboard.putNumber("X velocity", getRobotVelocity().vxMetersPerSecond);
-    // System.out.println("Robot Speed " + getRobotVelocity());
-    // System.out.println("Max Velocity " + swerveDrive.getMaximumChassisVelocity());
     // When vision is enabled we must manually update odometry in SwerveDrive
     if (visionDriveTest)
     {
@@ -245,19 +235,51 @@ public class SwerveSubsystem extends SubsystemBase
     PathfindingCommand.warmupCommand().schedule();
   }
 
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent())
-            {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-          },
-          this
-          // Reference to this subsystem to set requirements
-                            );
-    } catch (Exception e) {
+  /**
+   * Get the distance to the speaker.
+   *
+   * @return Distance to speaker in meters.
+   */
+  public double getDistanceToSpeaker()
+  {
+    int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
+    // Taken from PhotonUtils.getDistanceToPose
+    Pose3d speakerAprilTagPose = aprilTagFieldLayout.getTagPose(allianceAprilTag).get();
+    return getPose().getTranslation().getDistance(speakerAprilTagPose.toPose2d().getTranslation());
+  }
 
-    }
+  /**
+   * Get the yaw to aim at the speaker.
+   *
+   * @return {@link Rotation2d} of which you need to achieve.
+   */
+  public Rotation2d getSpeakerYaw()
+  {
+    int allianceAprilTag = DriverStation.getAlliance().get() == Alliance.Blue ? 7 : 4;
+    // Taken from PhotonUtils.getYawToPose()
+    Pose3d        speakerAprilTagPose = aprilTagFieldLayout.getTagPose(allianceAprilTag).get();
+    Translation2d relativeTrl         = speakerAprilTagPose.toPose2d().relativeTo(getPose()).getTranslation();
+    return new Rotation2d(relativeTrl.getX(), relativeTrl.getY()).plus(swerveDrive.getOdometryHeading());
+  }
+
+  /**
+   * Aim the robot at the speaker.
+   *
+   * @param tolerance Tolerance in degrees.
+   * @return Command to turn the robot to the speaker.
+   */
+  public Command aimAtSpeaker(double tolerance)
+  {
+    SwerveController controller = swerveDrive.getSwerveController();
+    return run(
+        () -> {
+          drive(ChassisSpeeds.fromFieldRelativeSpeeds(0,
+                                                      0,
+                                                      controller.headingCalculate(getHeading().getRadians(),
+                                                                                  getSpeakerYaw().getRadians()),
+                                                      getHeading())
+               );
+        }).until(() -> Math.abs(getSpeakerYaw().minus(getHeading()).getDegrees()) < tolerance);
   }
 
   /**
@@ -329,8 +351,7 @@ public class SwerveSubsystem extends SubsystemBase
   {
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
-System.out.println("position" + getPose().getTranslation());
-System.out.println("velocity" + getFieldVelocity());
+
       Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
                                                                                  translationY.getAsDouble()), 0.8);
       // Make the robot move
@@ -338,7 +359,7 @@ System.out.println("velocity" + getFieldVelocity());
                                                                       headingX.getAsDouble(),
                                                                       headingY.getAsDouble(),
                                                                       swerveDrive.getOdometryHeading().getRadians(),
-                                                                      swerveDrive.getMaximumChassisVelocity()));
+                                                                      Constants.MAX_SPEED));
     });
   }
 
@@ -359,7 +380,7 @@ System.out.println("velocity" + getFieldVelocity());
                                                                       translationY.getAsDouble(),
                                                                       rotation.getAsDouble() * Math.PI,
                                                                       swerveDrive.getOdometryHeading().getRadians(),
-                                                                      swerveDrive.getMaximumChassisVelocity()));
+                                                                      Constants.MAX_SPEED));
     });
   }
 
@@ -413,10 +434,7 @@ System.out.println("velocity" + getFieldVelocity());
   public Command driveToDistanceCommand(double distanceInMeters, double speedInMetersPerSecond)
   {
     return Commands.deferredProxy(
-        () -> Commands.run(() -> {
-          drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0));
-          System.out.println(swerveDrive.getPose().getTranslation());
-        }, this)
+        () -> Commands.run(() -> drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0)), this)
                       .until(() -> swerveDrive.getPose().getTranslation().getDistance(new Translation2d(0, 0)) >
                                    distanceInMeters)
                                  );
@@ -437,7 +455,7 @@ System.out.println("velocity" + getFieldVelocity());
    * @param  kA  the acceleration gain of the feedforward
    */
   public void replaceSwerveModuleFeedforward(double kS, double kV, double kA)
-  { 
+  {
     swerveDrive.replaceSwerveModuleFeedforward(new SimpleMotorFeedforward(kS, kV, kA));
   }
 
@@ -459,8 +477,6 @@ System.out.println("velocity" + getFieldVelocity());
                         Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
                         true,
                         false);
-      //System.out.println(getRobotVelocity().omegaRadiansPerSecond);
-                        //Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumAngularVelocity()
     });
   }
 
@@ -483,7 +499,6 @@ System.out.println("velocity" + getFieldVelocity());
     // for (SwerveModule sm : swerveDrive.getModules()) {
     //   System.out.println(sm.getState().angle);
     // }
-    
     swerveDrive.drive(translation,
                       rotation,
                       fieldRelative,
@@ -550,6 +565,7 @@ System.out.println("velocity" + getFieldVelocity());
    */
   public void setChassisSpeeds(ChassisSpeeds chassisSpeeds)
   {
+    chassisSpeeds = chassisSpeeds.div(7);
     swerveDrive.setChassisSpeeds(chassisSpeeds);
   }
 
@@ -633,20 +649,17 @@ System.out.println("velocity" + getFieldVelocity());
    */
   public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, double headingX, double headingY)
   {
-    return getTargetSpeeds(xInput, yInput, headingX, headingY, Units.feetToMeters(1));
-  }
-
-  public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, double headingX, double headingY, double maxSpeed) {
     Translation2d scaledInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
     ChassisSpeeds speeds = swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(),
                                                         scaledInputs.getY(),
                                                         headingX,
                                                         headingY,
                                                         getHeading().getRadians(),
-                                                        // System.out.println(speeds);
                                                         Constants.MAX_SPEED);
+    System.out.println(speeds);
     return speeds;
   }
+
   /**
    * Get the chassis speeds based on controller input of 1 joystick and one angle. Control the robot at an offset of
    * 90deg.
