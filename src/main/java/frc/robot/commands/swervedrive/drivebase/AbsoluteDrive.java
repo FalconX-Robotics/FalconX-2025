@@ -82,7 +82,7 @@ public class AbsoluteDrive extends Command
     {
       if (headingHorizontal.getAsDouble() == 0 && headingVertical.getAsDouble() == 0)
       {
-        // Get the curretHeading
+        // Get the currentHeading
         Rotation2d firstLoopHeading = swerve.getHeading();
 
         // Set the Current Heading to the desired Heading
