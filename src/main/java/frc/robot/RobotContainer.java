@@ -139,13 +139,18 @@ public class RobotContainer
       // drivebase.setDefaultCommand(absoluteDrive);
     } else
     {
+      Command driveToPointA = swerve.driveToPose(new Pose2d(3,2,new Rotation2d(Math.PI/2)));
+      Command driveToPointB = swerve.driveToPose(new Pose2d(1,1,new Rotation2d(Math.PI)));
+      Command driveToPointC = swerve.driveToPose(new Pose2d(2,2,new Rotation2d(0)));
       driverXbox.a().onTrue((Commands.runOnce(swerve::zeroGyro)));
       driverXbox.x().whileTrue(swerve.aimAtTarget(swerve.getVision().camera));
-      driverXbox.b().whileTrue(new ChangeSpeed(swerve));
+      // driverXbox.b().whileTrue(new ChangeSpeed(swerve));
+      driverXbox.rightTrigger().whileTrue(new ChangeSpeed(swerve));
       driverXbox.y().whileTrue(new PointToTarget(swerve));
-      driverXbox.back().whileTrue(Commands.none());
-      driverXbox.leftBumper().onTrue(swerve.driveToPose(new Pose2d(1,1,new Rotation2d(Math.PI/2))));
-      driverXbox.rightBumper().onTrue(swerve.driveToPose(new Pose2d(2,2,new Rotation2d(Math.PI))));
+      driverXbox.back().whileTrue(driveToPointA);
+      driverXbox.leftBumper().onTrue(driveToPointB);
+      driverXbox.rightBumper().onTrue(driveToPointC);
+      driverXbox.start().onTrue(driveToPointA.andThen(driveToPointB).andThen(driveToPointC));
       swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
     }
   }

@@ -81,8 +81,8 @@ public class SwerveSubsystem extends SubsystemBase
    * Enable vision odometry updates while driving.
    */
   private final boolean visionDriveTest = true;
-
   public boolean speedMode = false;
+  public boolean allowVisionPose = true;
 
   public SwerveDrive getSwerveDrive() {return swerveDrive;}
 
@@ -345,7 +345,7 @@ public class SwerveSubsystem extends SubsystemBase
         pose,
         constraints,
         edu.wpi.first.units.Units.MetersPerSecond.of(0)
-                                     );
+                                    );
   }
 
   /**
