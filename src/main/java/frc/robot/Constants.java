@@ -29,6 +29,8 @@ public final class Constants
   public static final double MAX_SPEED  = Units.feetToMeters(22);
   public static final double MAX_ANGULAR_VELOCITY = 2 * Math.PI;
 
+  public static final int CLIMB_ID = 30;
+
   public static final Pose2d START_POSE = new Pose2d();
       // Maximum speed of the robot in meters per second, used to limit acceleration.
 
