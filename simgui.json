@@ -3,6 +3,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Alerts": "Alerts",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/IMU": "Alerts",

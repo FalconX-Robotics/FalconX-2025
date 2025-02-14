@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -24,12 +26,17 @@ import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 import frc.robot.commands.swervedrive.drivebase.ChangeSpeed;
+import frc.robot.commands.swervedrive.drivebase.LineUpReef;
 import frc.robot.commands.swervedrive.drivebase.PointToTarget;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.util.Util;
 import swervelib.encoders.SwerveAbsoluteEncoder;
 
 import java.io.File;
+import java.nio.file.FileSystem;
+import java.time.LocalDateTime;
 import java.util.function.BooleanSupplier;
+import java.util.logging.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -85,6 +92,8 @@ public class RobotContainer
       () -> driverXbox.getRightX(),
       () -> driverXbox.getRightY());
 
+  Command driveInputs = swerve.driveInputs(()->driverXbox.getLeftY(), ()->driverXbox.getLeftX(), ()->driverXbox.getRightX());
+
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
@@ -109,8 +118,11 @@ public class RobotContainer
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+  
   public RobotContainer()
-  {
+  { 
+    Util.setStartTime(LocalDateTime.now());
+    DataLogManager.start(Filesystem.getOperatingDirectory() + "/logs", Util.getLogFilename());
     swerve.setupPathPlanner();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -142,15 +154,16 @@ public class RobotContainer
       Command driveToPointA = swerve.driveToPose(new Pose2d(3,2,new Rotation2d(Math.PI/2)));
       Command driveToPointB = swerve.driveToPose(new Pose2d(1,1,new Rotation2d(Math.PI)));
       Command driveToPointC = swerve.driveToPose(new Pose2d(2,2,new Rotation2d(0)));
-      driverXbox.a().onTrue((Commands.runOnce(swerve::zeroGyro)));
+      driverXbox.a().onTrue(getAutonomousCommand());
       driverXbox.x().whileTrue(swerve.aimAtTarget(swerve.getVision().camera));
       // driverXbox.b().whileTrue(new ChangeSpeed(swerve));
       driverXbox.rightTrigger().whileTrue(new ChangeSpeed(swerve));
       driverXbox.y().whileTrue(new PointToTarget(swerve));
-      driverXbox.back().whileTrue(driveToPointA);
+      driverXbox.back().onTrue(driveToPointA);
       driverXbox.leftBumper().onTrue(driveToPointB);
-      driverXbox.rightBumper().onTrue(driveToPointC);
-      driverXbox.start().onTrue(driveToPointA.andThen(driveToPointB).andThen(driveToPointC));
+      driverXbox.rightBumper().onTrue(new LineUpReef(swerve, 3, LineUpReef.Side.LEFT));
+      // driverXbox.start().onTrue(driveToPointA.andThen(driveToPointB.andThen(driveToPointC)));
+      driverXbox.leftTrigger().onTrue(new LineUpReef(swerve, 4, LineUpReef.Side.RIGHT));
       swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
     }
   }
@@ -162,6 +175,7 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
+    // return swerve.driveAndSpin();
     return autoChooser.getSelected();
     // return drivebase.driveToDistanceCommand(1, 0.1);
     // return drivebase.driveToDistanceCommand(200, 0.5);

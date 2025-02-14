@@ -8,6 +8,7 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -29,7 +30,9 @@ public final class Constants
   public static final double MAX_SPEED  = Units.feetToMeters(2);
   public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI;
 
-  public static final Pose2d START_POSE = new Pose2d();
+  public static final Pose2d START_POSE = new Pose2d(2, 2, Rotation2d.fromDegrees(0));
+
+  public static final double MAX_VISION_AMBIGUITY = 0.25;
       // Maximum speed of the robot in meters per second, used to limit acceleration.
 
   public static final class AutonConstants

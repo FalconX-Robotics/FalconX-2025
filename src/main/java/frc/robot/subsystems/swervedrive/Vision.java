@@ -52,10 +52,12 @@ public class Vision {
         return Optional.empty();
     }
     public Optional<PhotonPipelineResult> getLastResult() {
-        return Optional.ofNullable(camera.getLatestResult());
+        PhotonPipelineResult result = camera.getLatestResult();
+        return Optional.ofNullable(result);
         // return camera.getLatestResult()
         // var results = camera.getAllUnreadResults();
         // if (results.size() == 0) return Optional.empty();
         // return Optional.of(results.get(results.size()-1));
     }
+    public AprilTagFieldLayout getFieldLayout() {return fieldLayout;}
 }
