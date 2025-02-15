@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
-public class Grab extends Command {
+public class GrabCoral extends Command {
     Intake m_intake;
     double m_velocity;
     DigitalInput m_intakeLimitSwitch = new DigitalInput(1);
 
-    public Grab(Intake intake, double velocity) {
+    public GrabCoral(Intake intake, double velocity) {
         m_velocity = velocity;
         m_intake = intake;
         addRequirements(intake);

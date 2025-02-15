@@ -1,21 +1,20 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Intake extends SubsystemBase{
-    CANSparkMax grabberSparkMaxX = new CANSparkMax(22, MotorType.kBrushless);
-    CANSparkMax grabberSparkMaxY = new CANSparkMax(21, MotorType.kBrushless);
+    SparkMax intakeMotor = new SparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
+    SparkMax feederMotor = new SparkMax(Constants.FEEDER_MOTOR, MotorType.kBrushless);
+    // DigitalInput coralSensor = new DigitalInput(Constants.CORAL_SENSOR);
 
     public Intake() {
-        grabberSparkMaxY.follow(grabberSparkMaxX);
-        grabberSparkMaxY.setInverted(true);
-        //nothing
     }
     public void setMotor(double speed) {
-        grabberSparkMaxX.set(speed);
+        intakeMotor.set(speed);
     }
 
     // public double getSpeedX() {
@@ -27,6 +26,6 @@ public class Intake extends SubsystemBase{
 
     @Override
     public void periodic() {
-        //idk yet gimme a min
+        
     }
 }
