@@ -89,8 +89,8 @@ public class RobotContainer
   Command driveFieldOrientedDirectAngle = swerve.driveCommand(
       () -> MathUtil.applyDeadband(-driverXbox.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
       () -> MathUtil.applyDeadband(-driverXbox.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
-      () -> driverXbox.getRightX(),
-      () -> driverXbox.getRightY());
+      () -> -driverXbox.getRightX(),
+      () -> -driverXbox.getRightY());
 
   Command driveInputs = swerve.driveInputs(()->driverXbox.getLeftY(), ()->driverXbox.getLeftX(), ()->driverXbox.getRightX());
 
@@ -154,16 +154,16 @@ public class RobotContainer
       Command driveToPointA = swerve.driveToPose(new Pose2d(3,2,new Rotation2d(Math.PI/2)));
       Command driveToPointB = swerve.driveToPose(new Pose2d(1,1,new Rotation2d(Math.PI)));
       Command driveToPointC = swerve.driveToPose(new Pose2d(2,2,new Rotation2d(0)));
-      driverXbox.a().onTrue(getAutonomousCommand());
-      driverXbox.x().whileTrue(swerve.aimAtTarget(swerve.getVision().camera));
-      // driverXbox.b().whileTrue(new ChangeSpeed(swerve));
+      // driverXbox.a().onTrue(getAutonomousCommand());
+      // driverXbox.x().whileTrue(swerve.aimAtTarget(swerve.getVision().camera));
+      // // driverXbox.b().whileTrue(new ChangeSpeed(swerve));
       driverXbox.rightTrigger().whileTrue(new ChangeSpeed(swerve));
-      driverXbox.y().whileTrue(new PointToTarget(swerve));
-      driverXbox.back().onTrue(driveToPointA);
-      driverXbox.leftBumper().onTrue(driveToPointB);
-      driverXbox.rightBumper().onTrue(new LineUpReef(swerve, 3, LineUpReef.Side.LEFT));
-      // driverXbox.start().onTrue(driveToPointA.andThen(driveToPointB.andThen(driveToPointC)));
-      driverXbox.leftTrigger().onTrue(new LineUpReef(swerve, 4, LineUpReef.Side.RIGHT));
+      // driverXbox.y().whileTrue(new PointToTarget(swerve));
+      // driverXbox.back().onTrue(driveToPointA);
+      // driverXbox.leftBumper().onTrue(driveToPointB);
+      // driverXbox.rightBumper().onTrue(new LineUpReef(swerve, 3, LineUpReef.Side.LEFT));
+      // // driverXbox.start().onTrue(driveToPointA.andThen(driveToPointB.andThen(driveToPointC)));
+      // driverXbox.leftTrigger().onTrue(new LineUpReef(swerve, 4, LineUpReef.Side.RIGHT));
       swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
     }
   }

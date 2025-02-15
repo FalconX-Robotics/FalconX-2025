@@ -235,7 +235,7 @@ public class SwerveSubsystem extends SubsystemBase
       if (visionPose.isPresent()) {
         // System.out.println("update odometry");
 
-        // resetOdometry(visionPose.get());
+        resetOdometry(visionPose.get());
       }
     }
   }
@@ -365,7 +365,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command driveToPose(Pose2d pose)
   {
-// Create the constraints to use while pathfinding
+// Create the constraints to use while  
     PathConstraints constraints = new PathConstraints(
         swerveDrive.getMaximumChassisVelocity(), 4.0,
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));

@@ -14,10 +14,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision {
     public PhotonCamera camera;
     private AprilTagFieldLayout fieldLayout;
+    private boolean hasFieldLayout = false;
     
     public Vision(PhotonCamera camera) {
         this.camera = camera;
@@ -42,10 +44,11 @@ public class Vision {
         Optional<PhotonPipelineResult> result = getLastResult();
         if (result.isEmpty()) return Optional.empty();
         Optional<MultiTargetPNPResult> multiTagResult = result.get().getMultiTagResult();
+        SmartDashboard.putBoolean("Has Mutitag Result", hasFieldLayout);
         if (multiTagResult.isPresent()) {
-            System.out.println("Multi tag result");
             MultiTargetPNPResult fieldResult = multiTagResult.get();
             Transform3d robotTransform = fieldResult.estimatedPose.best;
+            hasFieldLayout = true;
             return Optional.of(new Pose2d(robotTransform.getX(), robotTransform.getY(), robotTransform.getRotation().toRotation2d()));
 
         }

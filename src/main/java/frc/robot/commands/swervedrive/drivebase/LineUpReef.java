@@ -8,6 +8,7 @@ import java.nio.channels.ScatteringByteChannel;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -35,6 +36,7 @@ public class LineUpReef extends Command {
 
     @Override
     public void initialize() {
+        SmartDashboard.putBoolean("Line Up Reef/Running", true);
         if (field.getTagPose(id).isPresent()) {
             tagPose = field.getTagPose(id).get().toPose2d();
             double x = tagPose.getX() + tagPose.getRotation().getCos();
@@ -43,7 +45,9 @@ public class LineUpReef extends Command {
             targetPose = new Pose2d(x, y, rot);
             goToTarget = swerve.driveToPose(targetPose);
             goToTarget.schedule();
-            
+            SmartDashboard.putNumber("Line Up Reef/Pose X", targetPose.getX());
+            SmartDashboard.putNumber("Line Up Reef/Pose Y", targetPose.getY());
+            SmartDashboard.putNumber("Line Up Reef/Pose Angle", targetPose.getRotation().getDegrees());
         } else {
             throw new RuntimeException("LineUpReef Target does not exist");
         }
@@ -53,6 +57,7 @@ public class LineUpReef extends Command {
     public void end(boolean interrupted) {
         // TODO Auto-generated method stub
         super.end(interrupted);
+        SmartDashboard.putBoolean("Line Up Reef/Running", false);
     }
     @Override
     public boolean isFinished() {
