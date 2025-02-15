@@ -8,20 +8,20 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Arm;
 
 public class Settings {
-    private XboxController m_driveController, m_armController;
+    private XboxController driveController, operatorController;
     public ArmSettings armSettings;
 
-    public Settings (XboxController driveController, XboxController armController) {
-        m_armController = armController;
-        m_driveController = driveController;
+    public Settings (XboxController driveController, XboxController operatorController) {
+        this.operatorController = operatorController;
+        this.driveController = driveController;
 
         armSettings = new ArmSettings();
     }
     /**Controller bindings and such for controlling arm and arm adjacent parts (eg:intake and elevator) */
     public class ArmSettings {
-        public Trigger grabButton       = new JoystickButton(m_armController, Button.kA.value);
-        public Trigger armAngleButton   = new JoystickButton(m_armController, Button.kB.value);
-        public Trigger releaseButton    = new JoystickButton(m_armController, Button.kX.value);
+        public Trigger coralIntakeButton       = new JoystickButton(operatorController, Button.kA.value);
+        public Trigger armAngleButton          = new JoystickButton(operatorController, Button.kB.value);
+        public Trigger realeaseIntakeButton    = new JoystickButton(operatorController, Button.kX.value);
         
         
     }

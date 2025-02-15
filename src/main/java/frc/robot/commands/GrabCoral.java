@@ -5,27 +5,29 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
 public class GrabCoral extends Command {
-    Intake m_intake;
-    double m_velocity;
-    DigitalInput m_intakeLimitSwitch = new DigitalInput(1);
+    Intake intake;
+    double velocity;
 
     public GrabCoral(Intake intake, double velocity) {
-        m_velocity = velocity;
-        m_intake = intake;
+        this.velocity = velocity;
+        this.intake = intake;
         addRequirements(intake);
     }
 
     @Override
     public void execute() {
-        if (m_intakeLimitSwitch.get()){
-            m_intake.setMotor(0);
-        } else {
-            m_intake.setMotor(m_velocity);
-        }
+        intake.setMotor(velocity);
+        intake.setFeeder(velocity);
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_intake.setMotor(0);
+        intake.setMotor(0);
+        intake.setFeeder(0);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return intake.hasCoral() && velocity < 0;
     }
 }

@@ -3,29 +3,26 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase{
     SparkMax intakeMotor = new SparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
     SparkMax feederMotor = new SparkMax(Constants.FEEDER_MOTOR, MotorType.kBrushless);
-    // DigitalInput coralSensor = new DigitalInput(Constants.CORAL_SENSOR);
-
-    public Intake() {
+    DigitalInput coralSensor = new DigitalInput(Constants.CORAL_SENSOR);
+    
+    //positive is intake
+    public void setMotor(double voltage) {
+        intakeMotor.set(voltage);
     }
-    public void setMotor(double speed) {
-        intakeMotor.set(speed);
+
+    // positive is intake
+    public void setFeeder(double voltage) {
+        intakeMotor.setVoltage(voltage);
     }
 
-    // public double getSpeedX() {
-    //     return grabberSparkMaxX.get();
-    // }
-    // public double getSpeedY() {
-    //     return grabberSparkMaxY.get();
-    // }
-
-    @Override
-    public void periodic() {
-        
+    public boolean hasCoral() {
+        return coralSensor.get();
     }
 }

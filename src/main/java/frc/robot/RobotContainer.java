@@ -119,11 +119,11 @@ public class RobotContainer
   private void configureBindings()
   {
     
-    m_settings.armSettings.grabButton.whileTrue(
+    m_settings.armSettings.coralIntakeButton.whileTrue(
       new GrabCoral(m_intake, 0.5)
     );
 
-    m_settings.armSettings.releaseButton.whileTrue(
+    m_settings.armSettings.realeaseIntakeButton.whileTrue(
       new Release(m_intake, -0.5)
     );
 
