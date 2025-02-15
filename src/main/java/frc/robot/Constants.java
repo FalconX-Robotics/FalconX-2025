@@ -29,6 +29,10 @@ public final class Constants
   public static final double MAX_SPEED  = Units.feetToMeters(1);
   public static final Pose2d START_POSE = new Pose2d();
 
+  public static final int ELEVATOR_MOTOR = 30;
+  public static final int ELEVATOR_TOP_LIMIT_SWITCH = 2;
+  public static final int ELEVATOR_BOTTOM_LIMIT_SWITCH = 3;
+
   public static final class AutonConstants
   {
 
