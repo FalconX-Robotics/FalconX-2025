@@ -170,7 +170,7 @@ public class SwerveSubsystem extends SubsystemBase
   public void setupPhotonVision()
   {
     PhotonCamera camera = new PhotonCamera("Limelight");
-    vision = new Vision(camera);
+    vision = new Vision(camera, this);
   }
 
   public Vision getVision() {
@@ -243,6 +243,7 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void simulationPeriodic()
   {
+    vision.updateSimulation();
   }
 
   /**

@@ -158,6 +158,7 @@ public class RobotContainer
       // driverXbox.x().whileTrue(swerve.aimAtTarget(swerve.getVision().camera));
       // // driverXbox.b().whileTrue(new ChangeSpeed(swerve));
       driverXbox.rightTrigger().whileTrue(new ChangeSpeed(swerve));
+      driverXbox.start().onTrue((Commands.runOnce(swerve::zeroGyro)));
       // driverXbox.y().whileTrue(new PointToTarget(swerve));
       // driverXbox.back().onTrue(driveToPointA);
       // driverXbox.leftBumper().onTrue(driveToPointB);
