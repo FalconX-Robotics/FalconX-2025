@@ -6,8 +6,10 @@ package frc.robot.subsystems.swervedrive;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
@@ -18,22 +20,33 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.studica.frc.AHRS;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DataLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RuntimeType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,7 +55,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.AutonConstants;
+import frc.robot.util.Elastic;
+import frc.robot.util.Elastic.Notification.NotificationLevel;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -66,6 +82,11 @@ public class SwerveSubsystem extends SubsystemBase
    * Swerve drive object.
    */
   private final SwerveDrive         swerveDrive;
+
+  private DoubleLogEntry xPositionLog = new DoubleLogEntry(DataLogManager.getLog(), "xPosition");
+  private BooleanLogEntry teleopLog = new BooleanLogEntry(DataLogManager.getLog(), "Teleop");
+  private BooleanLogEntry autoLog = new BooleanLogEntry(DataLogManager.getLog(), "Autonomous");
+  private DoubleLogEntry rotationLog = new DoubleLogEntry(DataLogManager.getLog(), "Rotation");
   /**
    * AprilTag field layout.
    */
@@ -73,7 +94,9 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean visionDriveTest = false;
+  private final boolean visionDriveTest = true;
+  public boolean speedMode = false;
+  public boolean allowVisionPose = true;
 
   public SwerveDrive getSwerveDrive() {return swerveDrive;}
 
@@ -120,7 +143,7 @@ public class SwerveSubsystem extends SubsystemBase
                                                true,
                                                0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
     swerveDrive.setModuleEncoderAutoSynchronize(false,
-                                                1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
+                                                1); // Enable if you want to resynchronize your absolute encoders and motor encoders  when they are not moving.
     swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
     if (visionDriveTest)
     {
@@ -130,7 +153,6 @@ public class SwerveSubsystem extends SubsystemBase
     }
     // setupPathPlanner();
   }
-
   /**
    * Construct the swerve drive.
    *
@@ -147,21 +169,74 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void setupPhotonVision()
   {
-    vision = new Vision(swerveDrive::getPose, swerveDrive.field);
+    PhotonCamera camera = new PhotonCamera("Limelight");
+    vision = new Vision(camera);
+  }
+
+  public Vision getVision() {
+    return vision;
   }
 
   @Override
   public void periodic()
   {
+    xPositionLog.append(getPose().getX());
+    teleopLog.append(DriverStation.isTeleopEnabled());
+    autoLog.append(DriverStation.isAutonomousEnabled());
+    rotationLog.append(getYaw().getDegrees());
+    Optional<Pose2d> cameraPose = vision.getFieldPose();
+    if (cameraPose.isPresent()) {
+      // swerveDrive.resetOdometry(cameraPose.get());
+    }
+    
+    // vision.updatePoseEstimation(swerveDrive);
     SmartDashboard.putNumber("Y velocity", getRobotVelocity().vyMetersPerSecond);
     SmartDashboard.putNumber("X velocity", getRobotVelocity().vxMetersPerSecond);
+    SmartDashboard.putNumber("Angle velocity", getRobotVelocity().omegaRadiansPerSecond);
+    SmartDashboard.putNumber("Gyro Value",Math.toDegrees(swerveDrive.getGyro().getRawRotation3d().getZ()));
     // System.out.println("Robot Speed " + getRobotVelocity());
     // System.out.println("Max Velocity " + swerveDrive.getMaximumChassisVelocity());
     // When vision is enabled we must manually update odometry in SwerveDrive
-    if (visionDriveTest)
+    if (true)
     {
+      Optional<Transform3d> tagPose = vision.getTagPose(4);
+      if (tagPose.isPresent()) {
+        double targetYaw = tagPose.get().getRotation().getZ();
+        // SmartDashboard.putNumber("robot angle", Math.toDegrees(getYaw().getRadians()));
+        SmartDashboard.putNumber("target angle", Math.toDegrees(targetYaw));
+      }
+      
+
+      if (cameraPose.isPresent()) {
+        Pose2d estimatedPose = cameraPose.get();
+        SmartDashboard.putNumber("Estimated Robot Pose X", estimatedPose.getX());
+        SmartDashboard.putNumber("Estimated Robot Pose Y", estimatedPose.getY());
+        SmartDashboard.putNumber("Estimated Robot Angle", estimatedPose.getRotation().getDegrees());
+        // SmartDashboard.putNumber("Estimated Robot Pose Z", estimatedPose.getZ());
+      }
+      // Optional<EstimatedRobotPose> poseEst = vision.getEstimatedGlobalPose(Cameras.LIMELIGHT);
+      // if (poseEst.isPresent()) {
+      //   swerveDrive.addVisionMeasurement(poseEst.get().estimatedPose.toPose2d(), poseEst.get().timestampSeconds);
+      // }
       swerveDrive.updateOdometry();
-      vision.updatePoseEstimation(swerveDrive);
+      // vision.updatePoseEstimation(swerveDrive);
+    }
+    SmartDashboard.putNumber("Robot Field X", getPose().getX());
+    SmartDashboard.putNumber("Robot Field Y", getPose().getY());
+    SmartDashboard.putNumber("Robot Field Angle", getPose().getRotation().getDegrees());
+    ChassisSpeeds speed = getRobotVelocity();
+
+    SmartDashboard.putNumber("X Velocity", speed.vxMetersPerSecond);
+    SmartDashboard.putNumber("Y Velocity", speed.vyMetersPerSecond);
+    SmartDashboard.putNumber("Rotation Velocity", speed.omegaRadiansPerSecond);
+    //not moving
+    if (MathUtil.isNear(0, speed.vxMetersPerSecond, 0.0001) && MathUtil.isNear(0, speed.vyMetersPerSecond, 0.0001) && MathUtil.isNear(0, speed.omegaRadiansPerSecond, 0.0001)) {
+      Optional<Pose2d> visionPose = vision.getFieldPose();
+      if (visionPose.isPresent()) {
+        // System.out.println("update odometry");
+
+        resetOdometry(visionPose.get());
+      }
     }
   }
 
@@ -224,6 +299,7 @@ public class SwerveSubsystem extends SubsystemBase
           this
           // Reference to this subsystem to set requirements
                             );
+          Pathfinding.setPathfinder(new LocalADStar());
     } catch (Exception e) {
 
     }
@@ -262,6 +338,25 @@ public class SwerveSubsystem extends SubsystemBase
     return new PathPlannerAuto(pathName);
   }
 
+  public Command driveInputs(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
+  {
+    return run(() -> {
+      // Make the robot move
+
+      swerveDrive.drive(new Translation2d(translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
+                                          translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()),
+                        angularRotationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
+                        true,
+                        true);
+    });
+  }
+
+  public Command driveAndSpin() {
+    return run(()-> {
+      driveFieldOriented(new ChassisSpeeds(0.5, 0, Math.PI));
+    });
+  }
+
   /**
    * Use PathPlanner Path finding to go to a point on the field.
    *
@@ -270,7 +365,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command driveToPose(Pose2d pose)
   {
-// Create the constraints to use while pathfinding
+// Create the constraints to use while  
     PathConstraints constraints = new PathConstraints(
         swerveDrive.getMaximumChassisVelocity(), 4.0,
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
@@ -280,7 +375,10 @@ public class SwerveSubsystem extends SubsystemBase
         pose,
         constraints,
         edu.wpi.first.units.Units.MetersPerSecond.of(0)
-                                     );
+                                    ).andThen(()-> {
+                                      Elastic.Notification notification = new Elastic.Notification(NotificationLevel.INFO, "", "Drove to " + pose);
+                                      Elastic.sendNotification(notification);
+                                    });
   }
 
   /**
@@ -295,20 +393,43 @@ public class SwerveSubsystem extends SubsystemBase
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
                               DoubleSupplier headingY)
   {
+    
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
-System.out.println("position" + getPose().getTranslation());
-System.out.println("velocity" + getFieldVelocity());
-      Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
-                                                                                 translationY.getAsDouble()), 0.8);
+      double xSpeed = translationX.getAsDouble();
+      double ySpeed = translationY.getAsDouble();
+      if (speedMode) {
+        xSpeed *= Constants.DrivebaseConstants.SPEED_MODE_SCALE;
+        ySpeed *= Constants.DrivebaseConstants.SPEED_MODE_SCALE;
+      }
+      System.out.println("position" + getPose().getTranslation());
+      System.out.println("velocity" + getFieldVelocity());
+
+      Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(xSpeed,
+                                                                                 ySpeed), 0.8);
       // Make the robot move
-      driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
-                                                                      headingX.getAsDouble(),
-                                                                      headingY.getAsDouble(),
-                                                                      swerveDrive.getOdometryHeading().getRadians(),
-                                                                      swerveDrive.getMaximumChassisVelocity()));
+      SmartDashboard.putNumber("Controller Angle", scaledInputs.getAngle().getDegrees());
+      SmartDashboard.putNumber("Controller X Speed", scaledInputs.getX());
+      SmartDashboard.putNumber("Controller Y Speed", scaledInputs.getY());
+      
+      ChassisSpeeds speeds = swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
+        headingX.getAsDouble(),
+        headingY.getAsDouble(),
+        swerveDrive.getOdometryHeading().getRadians(),
+        swerveDrive.getMaximumChassisVelocity());
+      if (MathUtil.applyDeadband(headingX.getAsDouble(), 0.1) == 0 && MathUtil.applyDeadband(headingY.getAsDouble(), 0.1) == 0) speeds.omegaRadiansPerSecond = 0;
+      // speeds.omegaRadiansPerSecond *= 3;
+      // speeds.omegaRadiansPerSecond = headingX.getAsDouble();
+      SmartDashboard.putNumber("Robot Movement Speeds X", speeds.vxMetersPerSecond);
+      SmartDashboard.putNumber("Robot Movement Speeds Y", speeds.vyMetersPerSecond);
+      SmartDashboard.putNumber("Robot Movement Speeds Angle", speeds.omegaRadiansPerSecond);
+      driveFieldOriented(speeds);
     });
   }
+
+  // public Command spinAndMove() {
+  //   AutoBuilder.
+  // }
 
   /**
    * Command to drive the robot using translative values and heading as a setpoint.
@@ -320,11 +441,19 @@ System.out.println("velocity" + getFieldVelocity());
    */
   public Command simDriveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier rotation)
   {
+    
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
+      
+      double xSpeed = translationX.getAsDouble();
+      double ySpeed = translationY.getAsDouble();
+      if (speedMode) {
+        xSpeed *= Constants.DrivebaseConstants.SPEED_MODE_SCALE;
+        ySpeed *= Constants.DrivebaseConstants.SPEED_MODE_SCALE;
+      }
       // Make the robot move
-      driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(translationX.getAsDouble(),
-                                                                      translationY.getAsDouble(),
+      driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xSpeed,
+                                                                      ySpeed,
                                                                       rotation.getAsDouble() * Math.PI,
                                                                       swerveDrive.getOdometryHeading().getRadians(),
                                                                       swerveDrive.getMaximumChassisVelocity()));
@@ -414,10 +543,16 @@ System.out.println("velocity" + getFieldVelocity());
   public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX)
   {
     return run(() -> {
+      double xSpeed = translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
+      double ySpeed = translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity();
+      if (speedMode) {
+        xSpeed *= Constants.DrivebaseConstants.SPEED_MODE_SCALE;
+        ySpeed *= Constants.DrivebaseConstants.SPEED_MODE_SCALE;
+      }
       // Make the robot move
       swerveDrive.drive(SwerveMath.scaleTranslation(new Translation2d(
-                            translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
-                            translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()), 0.8),
+                            xSpeed,
+                            ySpeed), 0.8),
                             Math.pow(angularRotationX.getAsDouble(), 3) * swerveDrive.getMaximumChassisAngularVelocity(),
                         true,
                         false);
@@ -646,6 +781,7 @@ System.out.println("velocity" + getFieldVelocity());
    */
   public ChassisSpeeds getRobotVelocity()
   {
+    
     return swerveDrive.getRobotVelocity();
   }
 
@@ -685,6 +821,11 @@ System.out.println("velocity" + getFieldVelocity());
   public Rotation2d getPitch()
   {
     return swerveDrive.getPitch();
+  }
+  public Rotation2d getYaw()
+  {
+    return swerveDrive.getOdometryHeading();
+    // return swerveDrive.getYaw();
   }
 
   /**
