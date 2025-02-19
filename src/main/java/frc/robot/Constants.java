@@ -29,6 +29,7 @@ public final class Constants
   public static final double MAX_SPEED  = Units.feetToMeters(22);
   public static final double MAX_ANGULAR_VELOCITY = 2 * Math.PI;
   public static final double CLAW_MASS = 0;
+  public static final double CLAW_SPEED = 3;
 
   public static final Pose2d START_POSE = new Pose2d();
       // Maximum speed of the robot in meters per second, used to limit acceleration.
@@ -39,6 +40,7 @@ public static final double CLAW_RADIUS = 0;
 
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
     public static final PIDConstants ANGLE_PID       = new PIDConstants(0.4, 0, 0.01);
+    
   }
 
   public static final class DrivebaseConstants
@@ -59,6 +61,23 @@ public static final double CLAW_RADIUS = 0;
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT    = 6;
   }
+
+  public static class ID 
+  {
+
+    public static final int armID = 22;
+
+
+  }
+
+public static class GearRatio 
+{
+  //change when we know the REAL gear ratio
+  public static final double armGearRatio = 0.5;
+
+
+}
+
 }
 /**
  * PDH 1

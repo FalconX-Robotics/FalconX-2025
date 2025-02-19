@@ -15,12 +15,18 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Arm extends SubsystemBase {
-  SparkMax armMotor = new SparkMax( 25, MotorType.kBrushless );
+  SparkMax armMotor = new SparkMax( 20, MotorType.kBrushless );
   RelativeEncoder armEncoder;
   Settings settings;
+  double currentSetpoint;
+  PIDController pidController;
+
+
 
   /** Creates a new Arm. */
   public Arm( Settings settings ) {
@@ -31,8 +37,11 @@ public class Arm extends SubsystemBase {
     // Configure the arm motor.
     SparkMaxConfig armMotorConfig = new SparkMaxConfig();
     armMotorConfig.idleMode( IdleMode.kBrake );
-
+    armMotorConfig.inverted( true );
     this.armMotor.configure( armMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters );
+
+    // Set the PID controller values.
+    this.pidController = new PIDController(6, 0, 1);
   }
 
   /**
@@ -44,6 +53,18 @@ public class Arm extends SubsystemBase {
     this.armMotor.set( velocity );
   }
 
+  public void setSetpoint (double setpoint) {
+    this.currentSetpoint = setpoint;
+  }
+  /**
+   * Set the voltage of the motor.
+   * @param voltage The voltage value of the motor. Ranges -12 (100% CCW) to +12 (100% CW)
+   */
+  public void setVoltage( double voltage ) {
+    // Set voltage.
+    this.armMotor.setVoltage( voltage );
+  }
+
   /**
    * Get the angle of the claw, in degrees. A zero, or perfect factor of 360, represents a forward-facing claw.
    * @return The angle of the claw.
@@ -52,7 +73,7 @@ public class Arm extends SubsystemBase {
     // Get the # of rotations that the claw has made. Then calculate the total by 360 (rotations -> degrees).
     SparkAbsoluteEncoder absoluteEncoder = this.armMotor.getAbsoluteEncoder();
     double totalRotations = absoluteEncoder.getPosition();
-    double angleDegrees = totalRotations * 360;
+    double angleDegrees = totalRotations * 360 * Constants.GearRatio.armGearRatio;
 
     // Return the angle.
     return angleDegrees;
@@ -60,6 +81,12 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+    pidController.setSetpoint(this.currentSetpoint);
+    double pidOutput = pidController.calculate(getAngle());
+    this.armMotor.setVoltage(pidOutput);
+    
+
+
     // This method will be called once per scheduler run
   }
 }

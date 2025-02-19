@@ -4,21 +4,31 @@
 
 package frc.robot.commands.swervedrive.arm;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
 public class MoveArm extends Command {
   Arm arm;
+  XboxController xboxController;
   DigitalInput digitalInput = new DigitalInput( 1 );
 
-  /** Creates a new Arm. */
-  public MoveArm( Arm arm ) {
-    this.arm = arm;
+  boolean usingPID = false;
 
-    addRequirements( arm ); 
+  /** 
+   * Creates a new Arm.
+   * @param arm The arm to move
+   * @param controller The Xbox controller to link the arm to.
+   */
+  public MoveArm( Arm arm, XboxController controller ) {
+    // Set instance variables.
+    this.arm = arm;
+    this.xboxController = controller;
+    this.addRequirements( arm ); 
   }
 
   // Called when the command is initially scheduled.
@@ -28,29 +38,71 @@ public class MoveArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // Get the mass, angle, & radius of the claw.
-    final double clawMass = Constants.CLAW_MASS;
-    final double clawAngle = this.arm.getAngle();
-    final double clawRadius = Constants.CLAW_RADIUS;
+    
+    boolean startButtonPressed = this.xboxController.getStartButtonPressed();
 
-    // Define the acceleration due to gravity.
-    final double gravityAccel = -9.8;
+    if ( startButtonPressed ) usingPID = !usingPID;
 
-    // Calculate the torque.
-    double gravityTorque = gravityAccel * clawMass * clawRadius * Math.cos( Units.degreesToRadians( clawAngle ) );
-    double magicNumber = 1;
+    if ( usingPID ) {
+      // Define the angles by the buttons.
+      final double aButtonAngle = 20;
+      final double bButtonAngle = 45;
+      final double xButtonAngle = 60;
 
-    // Declare the velocity to use for the arm motor.
-    double armMotorVelocity = gravityTorque * magicNumber;
+      // Get the current states of the buttons.
+      final boolean aButtonPressed = this.xboxController.getAButtonPressed();
+      final boolean bButtonPressed = this.xboxController.getBButtonPressed();
+      final boolean xButtonPressed = this.xboxController.getXButtonPressed();
 
-    // TODO link an input to add/subtract motor velocity
+      // Set the setpoint of the PID controller.
+      if ( aButtonPressed ) this.arm.setSetpoint(aButtonAngle);
+      if ( bButtonPressed ) this.arm.setSetpoint(bButtonAngle); 
+      if ( xButtonPressed ) this.arm.setSetpoint(xButtonAngle); 
 
-    this.arm.setVelocity( armMotorVelocity );
+
+    } else {
+
+      // Get the mass, angle, & radius of the claw.
+      final double clawMass = Constants.CLAW_MASS;
+      final double clawAngle = this.arm.getAngle();
+      final double clawRadius = Constants.CLAW_RADIUS;
+
+      // Get the X value of the left joystick.
+      final double joystickLeftXValue = this.xboxController.getLeftX();
+
+      // Define the acceleration due to gravity.
+      final double accelerationDueToGravity = -9.8;
+
+      // Calculate the torque.
+      final double gravityTorque = accelerationDueToGravity * clawMass * clawRadius * Math.cos( Units.degreesToRadians( clawAngle ) );
+      final double magicNumber = 1;
+
+      // Declare the velocity to use for the arm motor.
+      final double armMotorVelocity = gravityTorque * magicNumber;
+      
+      // Get the arm velocity based on the calculated factors.
+      double calculatedArmVelocity = armMotorVelocity + ( joystickLeftXValue * Constants.CLAW_SPEED );
+
+      // Declare the positive and negative limits.
+      final double positiveLimit = 1;
+      final double negativeLimit = -1;
+
+      // Apply the limits to the arm.
+      final boolean goingBeyondPositive = ( (clawAngle / 360) > positiveLimit ) && ( joystickLeftXValue > 0 );
+      final boolean goingBeyondNegative = ( (clawAngle / 360) < negativeLimit ) && ( joystickLeftXValue < 0 );
+      if ( goingBeyondPositive || goingBeyondNegative ) calculatedArmVelocity = 0;
+
+      this.arm.setVelocity( calculatedArmVelocity );
+
+    }
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+  }
 
   // Returns true when the command should end.
   @Override
