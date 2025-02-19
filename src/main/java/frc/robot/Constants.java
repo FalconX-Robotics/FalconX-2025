@@ -34,7 +34,6 @@ public final class Constants
   public static final int LED_PORT = 0;
 
   public static final Pose2d START_POSE = new Pose2d();
-  public static final double MAX_ANGULAR_VELOCITY  = Units.feetToMeters(1);
   public static final double MAX_INTAKE_SPEED = 1.0;
   public static final double MAX_RELEASE_SPEED = -1.0;
   public static final double MAX_ANGLE_UP_SPEED = 1.0;
