@@ -27,7 +27,13 @@ public final class Constants
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
-  public static final double MAX_SPEED  = Units.feetToMeters(1);
+  public static final double MAX_SPEED  = Units.feetToMeters(22);
+  public static final double MAX_ANGULAR_VELOCITY = 2 * Math.PI;
+  public static final double CLAW_MASS = 0;
+  public static final double CLAW_SPEED = 3;
+  public static final int LED_PORT = 0;
+
+  public static final Pose2d START_POSE = new Pose2d();
   public static final double MAX_ANGULAR_VELOCITY  = Units.feetToMeters(1);
   public static final double MAX_INTAKE_SPEED = 1.0;
   public static final double MAX_RELEASE_SPEED = -1.0;
@@ -41,12 +47,14 @@ public final class Constants
   public static final int CORAL_SENSOR = 0;
 
       // Maximum speed of the robot in meters per second, used to limit acceleration.
+public static final double CLAW_RADIUS = 0;
 
   public static final class AutonConstants
   {
 
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
     public static final PIDConstants ANGLE_PID       = new PIDConstants(0.4, 0, 0.01);
+    
   }
 
   public static final class DrivebaseConstants
@@ -60,20 +68,39 @@ public final class Constants
   {
 
     // Joystick Deadband
+    
+
     public static final double LEFT_X_DEADBAND  = 0.1;
     public static final double LEFT_Y_DEADBAND  = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT    = 6;
   }
+
+  public static class ID 
+  {
+
+    public static final int armID = 22;
+
+
+  }
+
+public static class GearRatio 
+{
+  //change when we know the REAL gear ratio
+  public static final double armGearRatio = 0.5;
+
+
+}
+
 }
 /**
  * PDH 1
- * BR Drive 5
- * BL Angle 6
- * BL Drive 7
- * FL Angle 2
- * FL Drive 12
+ * BR Drive 10
+ * BL Angle 17
+ * BL Drive 16
+ * FL Angle 15
+ * FL Drive 14
  * BR Angle 11
- * FR Angle 10
- * FR Drive 8 
+ * FR Angle 13
+ * FR Drive 12
  */

@@ -5,7 +5,7 @@
   },
   "drive": {
     "type": "sparkmax",
-    "id": 5,
+    "id": 10,
     "canbus": "rio"
   },
   "angle": {
