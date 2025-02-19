@@ -30,6 +30,7 @@ public final class Constants
   public static final double MAX_ANGULAR_VELOCITY = 2 * Math.PI;
   public static final double CLAW_MASS = 0;
   public static final double CLAW_SPEED = 3;
+  public static final int LED_PORT = 0;
 
   public static final Pose2d START_POSE = new Pose2d();
       // Maximum speed of the robot in meters per second, used to limit acceleration.
