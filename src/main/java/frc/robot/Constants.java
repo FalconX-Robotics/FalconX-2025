@@ -8,6 +8,7 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -26,9 +27,12 @@ public final class Constants
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
-  public static final double MAX_SPEED  = Units.feetToMeters(1);
-  public static final Pose2d START_POSE = new Pose2d();
+  public static final double MAX_SPEED  = Units.feetToMeters(4);
+  public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI;
+  public static final Pose2d START_POSE = new Pose2d(2, 2, Rotation2d.fromDegrees(0));
 
+  public static final double MAX_VISION_AMBIGUITY = 0.25;
+      // Maximum speed of the robot in meters per second, used to limit acceleration.
   public static final int ELEVATOR_MOTOR = 30;
   public static final int ELEVATOR_TOP_LIMIT_SWITCH = 2;
   public static final int ELEVATOR_BOTTOM_LIMIT_SWITCH = 3;
@@ -42,7 +46,7 @@ public final class Constants
 
   public static final class DrivebaseConstants
   {
-
+    public static final double SPEED_MODE_SCALE = 0.5;
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
@@ -59,12 +63,12 @@ public final class Constants
 }
 /**
  * PDH 1
- * BR Drive 5
- * BL Angle 6
- * BL Drive 7
- * FL Angle 2
- * FL Drive 12
+ * BR Drive 10
+ * BL Angle 17
+ * BL Drive 16
+ * FL Angle 15
+ * FL Drive 14
  * BR Angle 11
- * FR Angle 10
- * FR Drive 8 
+ * FR Angle 13
+ * FR Drive 12
  */
