@@ -45,6 +45,13 @@ import edu.wpi.first.util.datalog.DataLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DataLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RuntimeType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -57,8 +64,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.AutonConstants;
-import frc.robot.util.Elastic;
-import frc.robot.util.Elastic.Notification.NotificationLevel;
+import frc.robot.Elastic;
+import frc.robot.Elastic.Notification.NotificationLevel;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -130,7 +137,7 @@ public class SwerveSubsystem extends SubsystemBase
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.MACHINE;
     try
     {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, Constants.START_POSE);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, Constants.STARTING_POSE);
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
@@ -152,6 +159,7 @@ public class SwerveSubsystem extends SubsystemBase
       swerveDrive.stopOdometryThread();
     }
     // setupPathPlanner();
+    // setupPathPlanner();
   }
   /**
    * Construct the swerve drive.
@@ -161,7 +169,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
   {
-    swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Constants.MAX_SPEED, Constants.START_POSE);
+    swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Constants.MAX_SPEED, Constants.STARTING_POSE);
   }
 
   /**

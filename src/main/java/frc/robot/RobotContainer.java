@@ -12,14 +12,21 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.swervedrive.arm.ChangeIntakeAngle;
+import frc.robot.commands.swervedrive.arm.MoveArm;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.commands.swervedrive.intake.GrabCoral;
+import frc.robot.commands.swervedrive.intake.Release;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.encoders.SwerveAbsoluteEncoder;
 
@@ -32,12 +39,20 @@ import java.io.File;
  */
 public class RobotContainer
 {
+  private final XboxController driveController = new XboxController(0);
+  private final XboxController operatorXbox = new XboxController(1);
+
+  private final Settings settings = new Settings(driveController, operatorXbox);
+  private final Intake intake = new Intake();
+  private final Arm arm = new Arm(settings);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
+
+                                                            
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
@@ -107,6 +122,9 @@ public class RobotContainer
    */
   private void configureBindings()
   {
+    
+    
+
     if (DriverStation.isTest())
     {
       driverXbox.b().whileTrue(drivebase.sysIdDriveMotorCommand());
@@ -125,12 +143,17 @@ public class RobotContainer
           Commands.deferredProxy(() -> drivebase.driveToPose(
                                      new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
                                 ));
-      //driverXbox.y().whileTrue(drivebase.aimAtSpeaker(2));
+      // driverXbox.y().whileTrue(drivebase.aimAtSpeaker(2));
       driverXbox.start().whileTrue(Commands.none());
       driverXbox.back().whileTrue(Commands.none());
       driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverXbox.rightBumper().onTrue(Commands.none());
       drivebase.setDefaultCommand(absoluteDrive);
+
+      settings.armSettings.overrideArm.whileTrue(new ChangeIntakeAngle(arm, operatorXbox));
+      settings.armSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings));
+      settings.armSettings.realeaseButton.whileTrue(new Release(intake, settings));
+;      arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
     }
   }
 
