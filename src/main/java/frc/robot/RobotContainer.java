@@ -39,12 +39,6 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
  */
 public class RobotContainer
 {
-  private final XboxController driveController = new XboxController(0);
-  private final XboxController operatorXbox = new XboxController(1);
-
-  private final Settings settings = new Settings(driveController, operatorXbox);
-  private final Intake intake = new Intake();
-  private final Arm arm = new Arm(settings);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -52,6 +46,9 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
+  private final Settings settings = new Settings(driverXbox, operatorXbox);
+  private final Intake intake = new Intake();
+  private final Arm arm = new Arm(settings);
   
   private final Climb climb = new Climb();
   // Applies deadbands and inverts controls because joysticks
@@ -155,8 +152,8 @@ public class RobotContainer
       settings.armSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings));
       settings.armSettings.realeaseButton.whileTrue(new Release(intake, settings));
 ;      arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
-      operatorXbox.leftBumper().onTrue(new ClimbCommand(climb, false));
-      operatorXbox.rightBumper().onTrue(new ClimbCommand(climb, true));
+      // operatorXbox.leftBumper().onTrue(new ClimbCommand(climb, false));
+      // operatorXbox.rightBumper().onTrue(new ClimbCommand(climb, true));
     }
   }
 

@@ -9,9 +9,9 @@ import frc.robot.subsystems.Arm;
 
 public class ChangeIntakeAngle extends Command {
     Arm arm;
-    XboxController xbox;
+    CommandXboxController xbox;
 
-    public ChangeIntakeAngle(Arm arm, XboxController xbox) {
+    public ChangeIntakeAngle(Arm arm, CommandXboxController xbox) {
         this.arm = arm;
         this.xbox = xbox;
 

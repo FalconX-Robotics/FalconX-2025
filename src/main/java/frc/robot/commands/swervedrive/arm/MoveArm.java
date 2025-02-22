@@ -9,12 +9,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
 public class MoveArm extends Command {
   Arm arm;
-  XboxController xboxController;
+  CommandXboxController xboxController;
   DigitalInput digitalInput = new DigitalInput( 1 );
 
   boolean usingPID = false;
@@ -24,7 +25,7 @@ public class MoveArm extends Command {
    * @param arm The arm to move
    * @param controller The Xbox controller to link the arm to.
    */
-  public MoveArm( Arm arm, XboxController controller ) {
+  public MoveArm( Arm arm, CommandXboxController controller ) {
     // Set instance variables.
     this.arm = arm;
     this.xboxController = controller;
@@ -39,7 +40,7 @@ public class MoveArm extends Command {
   @Override
   public void execute() {
     
-    boolean startButtonPressed = this.xboxController.getStartButtonPressed();
+    boolean startButtonPressed = this.xboxController.start().getAsBoolean();
 
     if ( startButtonPressed ) usingPID = !usingPID;
       // Define the angles by the buttons.
@@ -48,9 +49,9 @@ public class MoveArm extends Command {
       final double xButtonAngle = 60;
 
       // Get the current states of the buttons.
-      final boolean aButtonPressed = this.xboxController.getAButtonPressed();
-      final boolean bButtonPressed = this.xboxController.getBButtonPressed();
-      final boolean xButtonPressed = this.xboxController.getXButtonPressed();
+      final boolean aButtonPressed = this.xboxController.a().getAsBoolean();
+      final boolean bButtonPressed = this.xboxController.b().getAsBoolean();
+      final boolean xButtonPressed = this.xboxController.x().getAsBoolean();
 
       // Set the setpoint of the PID controller.
       if ( aButtonPressed ) this.arm.setSetpoint(aButtonAngle);
