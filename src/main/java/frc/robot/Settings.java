@@ -21,8 +21,10 @@ public class Settings {
     public class ArmSettings {
         public Trigger coralIntakeButton       = new JoystickButton(operatorController, Button.kA.value);
         public Trigger armAngleButton          = new JoystickButton(operatorController, Button.kB.value);
-        public Trigger realeaseIntakeButton    = new JoystickButton(operatorController, Button.kX.value);
-        
-        
+        public Trigger realeaseButton    = new JoystickButton(operatorController, Button.kX.value);
+        public Trigger overrideArm = new Trigger(() -> {return Math.abs(operatorController.getRightY()) > 0.1;});
+
+        public double intakeSpeed = 0.5;
+        public double releaseSpeed = 0.5;
     }
 }

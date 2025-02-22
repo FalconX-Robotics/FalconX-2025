@@ -42,8 +42,6 @@ public class MoveArm extends Command {
     boolean startButtonPressed = this.xboxController.getStartButtonPressed();
 
     if ( startButtonPressed ) usingPID = !usingPID;
-
-    if ( usingPID ) {
       // Define the angles by the buttons.
       final double aButtonAngle = 20;
       final double bButtonAngle = 45;
@@ -56,46 +54,8 @@ public class MoveArm extends Command {
 
       // Set the setpoint of the PID controller.
       if ( aButtonPressed ) this.arm.setSetpoint(aButtonAngle);
-      if ( bButtonPressed ) this.arm.setSetpoint(bButtonAngle); 
-      if ( xButtonPressed ) this.arm.setSetpoint(xButtonAngle); 
-
-
-    } else {
-
-      // Get the mass, angle, & radius of the claw.
-      final double clawMass = Constants.CLAW_MASS;
-      final double clawAngle = this.arm.getAngle();
-      final double clawRadius = Constants.CLAW_RADIUS;
-
-      // Get the X value of the left joystick.
-      final double joystickLeftXValue = this.xboxController.getLeftX();
-
-      // Define the acceleration due to gravity.
-      final double accelerationDueToGravity = -9.8;
-
-      // Calculate the torque.
-      final double gravityTorque = accelerationDueToGravity * clawMass * clawRadius * Math.cos( Units.degreesToRadians( clawAngle ) );
-      final double magicNumber = 1;
-
-      // Declare the velocity to use for the arm motor.
-      final double armMotorVelocity = gravityTorque * magicNumber;
-      
-      // Get the arm velocity based on the calculated factors.
-      double calculatedArmVelocity = armMotorVelocity + ( joystickLeftXValue * Constants.CLAW_SPEED );
-
-      // Declare the positive and negative limits.
-      final double positiveLimit = 1;
-      final double negativeLimit = -1;
-
-      // Apply the limits to the arm.
-      final boolean goingBeyondPositive = ( (clawAngle / 360) > positiveLimit ) && ( joystickLeftXValue > 0 );
-      final boolean goingBeyondNegative = ( (clawAngle / 360) < negativeLimit ) && ( joystickLeftXValue < 0 );
-      if ( goingBeyondPositive || goingBeyondNegative ) calculatedArmVelocity = 0;
-
-      this.arm.setVelocity( calculatedArmVelocity );
-
-    }
-
+      if ( bButtonPressed ) this.arm.setSetpoint(bButtonAngle);
+      if ( xButtonPressed ) this.arm.setSetpoint(xButtonAngle);
   }
 
   // Called once the command ends or is interrupted.

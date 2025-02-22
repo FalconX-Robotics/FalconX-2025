@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import org.dyn4j.dynamics.Settings;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -16,8 +14,13 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Settings;
+import frc.robot.Util;
 
 public class Arm extends SubsystemBase {
   SparkMax armMotor = new SparkMax( 20, MotorType.kBrushless );
@@ -26,7 +29,12 @@ public class Arm extends SubsystemBase {
   double currentSetpoint;
   PIDController pidController;
 
+  public boolean manualOverride = false;
 
+  DoubleLogEntry angleLog = Util.createDoubleLog("arm/angle");
+  DoubleLogEntry setpointLog = Util.createDoubleLog("arm/setpoint");
+  DoubleLogEntry velocityLog = Util.createDoubleLog("arm/velocityLog");
+  BooleanLogEntry overrideLog = Util.createBooleanLog("arm/override");
 
   /** Creates a new Arm. */
   public Arm( Settings settings ) {
@@ -81,12 +89,14 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    pidController.setSetpoint(this.currentSetpoint);
-    double pidOutput = pidController.calculate(getAngle());
-    this.armMotor.setVoltage(pidOutput);
-    
-
-
-    // This method will be called once per scheduler run
+    if (!manualOverride) {
+      pidController.setSetpoint(this.currentSetpoint);
+      double pidOutput = pidController.calculate(getAngle());
+      this.armMotor.setVoltage(pidOutput);
+    }
+    angleLog.append(getAngle());
+    setpointLog.append(currentSetpoint);
+    velocityLog.append(armMotor.getEncoder().getVelocity());
+    overrideLog.append(manualOverride);
   }
 }

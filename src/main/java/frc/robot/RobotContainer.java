@@ -20,10 +20,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.GrabCoral;
-import frc.robot.commands.Release;
+import frc.robot.commands.swervedrive.arm.ChangeIntakeAngle;
+import frc.robot.commands.swervedrive.arm.MoveArm;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.commands.swervedrive.intake.GrabCoral;
+import frc.robot.commands.swervedrive.intake.Release;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.encoders.SwerveAbsoluteEncoder;
@@ -38,10 +41,11 @@ import java.io.File;
 public class RobotContainer
 {
   private final XboxController driveController = new XboxController(0);
-  private final XboxController armController = new XboxController(1);
+  private final XboxController operatorXbox = new XboxController(1);
 
-  private final Settings m_settings = new Settings(driveController, armController);
-  private final Intake m_intake = new Intake();
+  private final Settings settings = new Settings(driveController, operatorXbox);
+  private final Intake intake = new Intake();
+  private final Arm arm = new Arm(settings);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -120,13 +124,7 @@ public class RobotContainer
   private void configureBindings()
   {
     
-    m_settings.armSettings.coralIntakeButton.whileTrue(
-      new GrabCoral(m_intake, 0.5)
-    );
-
-    m_settings.armSettings.realeaseIntakeButton.whileTrue(
-      new Release(m_intake, -0.5)
-    );
+    
 
     if (DriverStation.isTest())
     {
@@ -153,7 +151,10 @@ public class RobotContainer
       driverXbox.rightBumper().onTrue(Commands.none());
       drivebase.setDefaultCommand(absoluteDrive);
 
-
+      settings.armSettings.overrideArm.whileTrue(new ChangeIntakeAngle(arm, operatorXbox));
+      settings.armSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings));
+      settings.armSettings.realeaseButton.whileTrue(new Release(intake, settings));
+;      arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
     }
   }
 

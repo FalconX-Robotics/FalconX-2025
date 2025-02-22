@@ -1,23 +1,23 @@
-package frc.robot.commands;
+package frc.robot.commands.swervedrive.intake;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Settings;
 import frc.robot.subsystems.Intake;
 
-public class GrabCoral extends Command {
+public class Release extends Command {
     Intake intake;
-    double velocity;
+    Settings settings;
 
-    public GrabCoral(Intake intake, double velocity) {
-        this.velocity = velocity;
+    public Release(Intake intake, Settings settings){
         this.intake = intake;
+        this.settings = settings;
         addRequirements(intake);
     }
 
     @Override
     public void execute() {
-        intake.setMotor(velocity);
-        intake.setFeeder(velocity);
+        intake.setMotor(settings.armSettings.releaseSpeed);
+        intake.setFeeder(settings.armSettings.releaseSpeed);
     }
 
     @Override
@@ -28,6 +28,6 @@ public class GrabCoral extends Command {
 
     @Override
     public boolean isFinished() {
-        return intake.hasCoral() && velocity < 0;
+        return settings.armSettings.releaseSpeed > 0;
     }
 }
