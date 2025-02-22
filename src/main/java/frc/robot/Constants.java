@@ -33,6 +33,8 @@ public final class Constants
   public static final double CLAW_MASS = 0;
   public static final double CLAW_SPEED = 3;
   public static final int LED_PORT = 0;
+  public static final int CLIMB_ID = 30;
+
   public static final Pose2d START_POSE = new Pose2d(2, 2, Rotation2d.fromDegrees(0));
 
   public static final double MAX_VISION_AMBIGUITY = 0.25;

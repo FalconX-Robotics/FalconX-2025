@@ -4,11 +4,12 @@
 
 package frc.robot;
 
+import java.io.File;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -19,18 +20,17 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.climb.ClimbCommand;
 import frc.robot.commands.swervedrive.arm.ChangeIntakeAngle;
 import frc.robot.commands.swervedrive.arm.MoveArm;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.climb.Climb;
 import frc.robot.commands.swervedrive.intake.GrabCoral;
 import frc.robot.commands.swervedrive.intake.Release;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import swervelib.encoders.SwerveAbsoluteEncoder;
-
-import java.io.File;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -48,11 +48,12 @@ public class RobotContainer
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
+  final CommandXboxController operatorXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
-
-                                                            
+  
+  private final Climb climb = new Climb();
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
@@ -154,6 +155,8 @@ public class RobotContainer
       settings.armSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings));
       settings.armSettings.realeaseButton.whileTrue(new Release(intake, settings));
 ;      arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
+      operatorXbox.leftBumper().onTrue(new ClimbCommand(climb, false));
+      operatorXbox.rightBumper().onTrue(new ClimbCommand(climb, true));
     }
   }
 
