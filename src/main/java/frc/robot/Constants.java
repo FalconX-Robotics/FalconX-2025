@@ -64,7 +64,6 @@ public static final double CLAW_RADIUS = 0;
   public static final class DrivebaseConstants
   {
     public static final double SPEED_MODE_SCALE = 0.5;
-    public static final double SPEED_MODE_SCALE = 0.5;
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
