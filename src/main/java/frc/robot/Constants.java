@@ -33,7 +33,6 @@ public final class Constants
   public static final double CLAW_MASS = 0;
   public static final double CLAW_SPEED = 3;
   public static final int LED_PORT = 0;
-  public static final int CLIMB_ID = 30;
 
   public static final Pose2d START_POSE = new Pose2d(2, 2, Rotation2d.fromDegrees(0));
 
@@ -45,13 +44,15 @@ public final class Constants
 
   public static final Pose2d STARTING_POSE = new Pose2d();
 
-  public static final int INTAKE_MOTOR = 20;
-  public static final int FEEDER_MOTOR = 21;
   public static final int CORAL_SENSOR = 0;
+  public static final int ARM_MOTOR = 20;
+  public static final int FEEDER_MOTOR = 21;
+  public static final int INTAKE_MOTOR = 22;
+  public static final int ELEVATOR_MOTOR = 30;
+  public static final int CLIMB_ID = 40;
 
       // Maximum speed of the robot in meters per second, used to limit acceleration.
-public static final double CLAW_RADIUS = 0;
-  public static final int ELEVATOR_MOTOR = 30;
+  public static final double CLAW_RADIUS = 0;
   public static final int ELEVATOR_TOP_LIMIT_SWITCH = 2;
   public static final int ELEVATOR_BOTTOM_LIMIT_SWITCH = 3;
 
@@ -65,7 +66,7 @@ public static final double CLAW_RADIUS = 0;
 
   public static final class DrivebaseConstants
   {
-    public static final double SPEED_MODE_SCALE = 0.5;
+    public static final double SPEED_MODE_SCALE = 0.2;
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }

@@ -12,12 +12,13 @@ public class Release extends Command {
         this.intake = intake;
         this.settings = settings;
         addRequirements(intake);
+        setName("Release");
     }
 
     @Override
     public void execute() {
         intake.setMotor(settings.armSettings.releaseSpeed);
-        intake.setFeeder(settings.armSettings.releaseSpeed);
+        intake.setFeeder(settings.armSettings.releaseSpeed/4);
     }
 
     @Override

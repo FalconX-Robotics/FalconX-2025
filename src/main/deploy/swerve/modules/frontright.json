@@ -1,7 +1,7 @@
 {
   "location": {
-    "front": 10.75,
-    "left": -10.75
+    "front": 14.75,
+    "left": -14.75
   },
   "drive": {
     "type": "sparkmax",

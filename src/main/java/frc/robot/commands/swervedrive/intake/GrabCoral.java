@@ -13,12 +13,13 @@ public class GrabCoral extends Command {
         this.settings = settings;
         this.intake = intake;
         addRequirements(intake);
+        setName("GrabCoral");
     }
 
     @Override
     public void execute() {
         intake.setMotor(settings.armSettings.intakeSpeed);
-        intake.setFeeder(settings.armSettings.intakeSpeed);
+        intake.setFeeder(settings.armSettings.intakeSpeed/4);
     }
 
     @Override

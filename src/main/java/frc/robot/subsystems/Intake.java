@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase{
 
     // positive is intake
     public void setFeeder(double voltage) {
-        intakeMotor.setVoltage(voltage);
+        feederMotor.set(voltage);
     }
 
     public boolean hasCoral() {

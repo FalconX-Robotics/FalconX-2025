@@ -431,6 +431,9 @@ public class SwerveSubsystem extends SubsystemBase
       SmartDashboard.putNumber("Robot Movement Speeds X", speeds.vxMetersPerSecond);
       SmartDashboard.putNumber("Robot Movement Speeds Y", speeds.vyMetersPerSecond);
       SmartDashboard.putNumber("Robot Movement Speeds Angle", speeds.omegaRadiansPerSecond);
+      if (speedMode) {
+        speeds.omegaRadiansPerSecond *= Constants.DrivebaseConstants.SPEED_MODE_SCALE;
+      }
       driveFieldOriented(speeds);
     });
   }

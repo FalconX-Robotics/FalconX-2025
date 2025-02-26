@@ -23,7 +23,7 @@ import frc.robot.Settings;
 import frc.robot.Util;
 
 public class Arm extends SubsystemBase {
-  SparkMax armMotor = new SparkMax( 20, MotorType.kBrushless );
+  SparkMax armMotor = new SparkMax(Constants.ARM_MOTOR, MotorType.kBrushless );
   RelativeEncoder armEncoder;
   Settings settings;
   double currentSetpoint;

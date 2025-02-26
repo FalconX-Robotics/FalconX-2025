@@ -15,19 +15,20 @@ public class Climb extends SubsystemBase {
     double position = motor.getAbsoluteEncoder().getPosition();
 
     public void motorRun(double voltage){
-        double finalVoltage = voltage;
 
-        boolean beyondNegative = position <= negitiveLimit;
-        boolean beyonePositive = position >= positiveLimit;
+        // double finalVoltage = voltage;
 
-        if (beyondNegative && (voltage < 0)){
-            finalVoltage = 0;
-        }
+        // boolean beyondNegative = position <= negitiveLimit;
+        // boolean beyonePositive = position >= positiveLimit;
+
+        // if (beyondNegative && (voltage < 0)){
+        //     finalVoltage = 0;
+        // }
         
-        if (beyonePositive && (voltage > 0)){
-            finalVoltage = 0;
-        }
+        // if (beyonePositive && (voltage > 0)){
+        //     finalVoltage = 0;
+        // }
         
-        motor.setVoltage(finalVoltage);
+        motor.setVoltage(voltage);
     }
 }

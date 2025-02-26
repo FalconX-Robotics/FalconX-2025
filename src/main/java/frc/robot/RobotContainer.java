@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.climb.ClimbCommand;
+import frc.robot.commands.elevator.ManualElevator;
 import frc.robot.commands.swervedrive.arm.ChangeIntakeAngle;
 import frc.robot.commands.swervedrive.arm.MoveArm;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.climb.Climb;
 import frc.robot.commands.swervedrive.intake.GrabCoral;
 import frc.robot.commands.swervedrive.intake.Release;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -49,6 +51,7 @@ public class RobotContainer
   private final Settings settings = new Settings(driverXbox, operatorXbox);
   private final Intake intake = new Intake();
   private final Arm arm = new Arm(settings);
+  private final Elevator elevator = new Elevator();
   
   private final Climb climb = new Climb();
   // Applies deadbands and inverts controls because joysticks
@@ -151,9 +154,12 @@ public class RobotContainer
       settings.armSettings.overrideArm.whileTrue(new ChangeIntakeAngle(arm, operatorXbox));
       settings.armSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings));
       settings.armSettings.realeaseButton.whileTrue(new Release(intake, settings));
-;      arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
-      // operatorXbox.leftBumper().onTrue(new ClimbCommand(climb, false));
-      // operatorXbox.rightBumper().onTrue(new ClimbCommand(climb, true));
+      arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
+      
+      settings.armSettings.climbButton.whileTrue(new ClimbCommand(climb, false, settings));
+      settings.armSettings.unClimbButton.whileTrue(new ClimbCommand(climb, true, settings));
+
+      elevator.setDefaultCommand(new ManualElevator(elevator, operatorXbox));
     }
   }
 

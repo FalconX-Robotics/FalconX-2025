@@ -29,6 +29,8 @@ public class Settings {
         public Trigger unClimbButton = operatorController.rightBumper();
 
         public double intakeSpeed = 0.5;
-        public double releaseSpeed = 0.5;
+        public double releaseSpeed = -0.5;
+
+        public double climbSpeed = 5;
     }
 }

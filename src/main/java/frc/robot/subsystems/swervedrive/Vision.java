@@ -10,6 +10,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -24,7 +25,8 @@ public class Vision {
     public Vision(PhotonCamera camera) {
         this.camera = camera;
         try {
-            this.fieldLayout = new AprilTagFieldLayout(Filesystem.getDeployDirectory() + "/vision/2025-test-field.json");
+            // this.fieldLayout = new AprilTagFieldLayout(Filesystem.getDeployDirectory() + "/vision/2025-test-field.json");
+            fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
         } catch (Exception e) {System.err.println("April tag layout file not found");}
     }
 
