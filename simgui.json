@@ -3,12 +3,15 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Alerts": "Alerts",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/IMU": "Alerts",
       "/SmartDashboard/JSON": "Alerts",
       "/SmartDashboard/Motors": "Alerts",
-      "/SmartDashboard/Swerve Drive": "Alerts"
+      "/SmartDashboard/Swerve Drive": "Alerts",
+      "/SmartDashboard/Vision Sim Field": "Field2d",
+      "/SmartDashboard/VisionSystemSim-Limelight/Sim Field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -17,9 +20,35 @@
         "left": 150,
         "right": 2961,
         "top": 79,
+        "width": 16.541748046875
+      },
+      "/SmartDashboard/VisionSystemSim-Limelight/Sim Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
         "width": 16.541748046875,
         "window": {
           "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "CameraPublisher": {
+        "Limelight-processed": {
+          "open": true
+        },
+        "Limelight-raw": {
+          "open": true
+        },
+        "open": true
+      },
+      "photonvision": {
+        "Limelight": {
+          "open": true
         }
       }
     }

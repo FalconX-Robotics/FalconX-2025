@@ -45,13 +45,6 @@ import edu.wpi.first.util.datalog.DataLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.util.datalog.BooleanLogEntry;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.DataLogEntry;
-import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RuntimeType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -64,8 +57,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.AutonConstants;
-import frc.robot.Elastic;
-import frc.robot.Elastic.Notification.NotificationLevel;
+import frc.robot.util.Elastic;
+import frc.robot.util.Elastic.Notification.NotificationLevel;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
@@ -134,7 +127,7 @@ public class SwerveSubsystem extends SubsystemBase
     
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.MACHINE;
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, Constants.STARTING_POSE);
@@ -178,7 +171,7 @@ public class SwerveSubsystem extends SubsystemBase
   public void setupPhotonVision()
   {
     PhotonCamera camera = new PhotonCamera("Limelight");
-    vision = new Vision(camera);
+    vision = new Vision(camera, this);
   }
 
   public Vision getVision() {
@@ -251,6 +244,7 @@ public class SwerveSubsystem extends SubsystemBase
   @Override
   public void simulationPeriodic()
   {
+    vision.updateSimulation();
   }
 
   /**
@@ -431,9 +425,6 @@ public class SwerveSubsystem extends SubsystemBase
       SmartDashboard.putNumber("Robot Movement Speeds X", speeds.vxMetersPerSecond);
       SmartDashboard.putNumber("Robot Movement Speeds Y", speeds.vyMetersPerSecond);
       SmartDashboard.putNumber("Robot Movement Speeds Angle", speeds.omegaRadiansPerSecond);
-      if (speedMode) {
-        speeds.omegaRadiansPerSecond *= Constants.DrivebaseConstants.SPEED_MODE_SCALE;
-      }
       driveFieldOriented(speeds);
     });
   }

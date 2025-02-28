@@ -8,7 +8,9 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 // import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
@@ -30,27 +32,12 @@ public final class Constants
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(4);
   public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI;
-  public static final double CLAW_MASS = 0;
-  public static final double CLAW_SPEED = 3;
-  public static final int LED_PORT = 0;
+
+  public static final Pose3d ROBOT_TO_CAMERA_POSE = new Pose3d(0, 0, 0.5, new Rotation3d());
 
   public static final Pose2d START_POSE = new Pose2d(2, 2, Rotation2d.fromDegrees(0));
 
   public static final double MAX_VISION_AMBIGUITY = 0.25;
-  public static final double MAX_INTAKE_SPEED = 1.0;
-  public static final double MAX_RELEASE_SPEED = -1.0;
-  public static final double MAX_ANGLE_UP_SPEED = 1.0;
-  public static final double MAX_ANGLE_DOWN_SPEED = -1.0;
-
-  public static final Pose2d STARTING_POSE = new Pose2d();
-
-  public static final int CORAL_SENSOR = 0;
-  public static final int ARM_MOTOR = 20;
-  public static final int FEEDER_MOTOR = 21;
-  public static final int INTAKE_MOTOR = 22;
-  public static final int ELEVATOR_MOTOR = 30;
-  public static final int CLIMB_ID = 40;
-
       // Maximum speed of the robot in meters per second, used to limit acceleration.
   public static final double CLAW_RADIUS = 0;
   public static final int ELEVATOR_TOP_LIMIT_SWITCH = 2;
@@ -69,6 +56,7 @@ public final class Constants
     public static final double SPEED_MODE_SCALE = 0.2;
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
+    public static final double SPEED_MODE_SCALE = 0.5;
   }
 
   public static class OperatorConstants
@@ -76,7 +64,6 @@ public final class Constants
 
     // Joystick Deadband
     
-
     public static final double LEFT_X_DEADBAND  = 0.1;
     public static final double LEFT_Y_DEADBAND  = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;

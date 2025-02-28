@@ -82,7 +82,7 @@ public class AbsoluteDrive extends Command
     {
       if (headingHorizontal.getAsDouble() == 0 && headingVertical.getAsDouble() == 0)
       {
-        // Get the curretHeading
+        // Get the currentHeading
         Rotation2d firstLoopHeading = swerve.getHeading();
 
         // Set the Current Heading to the desired Heading
@@ -107,8 +107,9 @@ public class AbsoluteDrive extends Command
     // Make the robot move
     System.out.println("Desired Speeds: " + desiredSpeeds);
     System.out.println("Translation: " + translation);
-    swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true);
-
+    SmartDashboard.putNumber("Robot Movement Angle", translation.getAngle().getDegrees());
+    swerve.drive(translation, headingHorizontal.getAsDouble(), true);
+    // swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true);
   }
 
   // Called once the command ends or is interrupted.
