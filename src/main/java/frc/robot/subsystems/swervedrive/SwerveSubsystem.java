@@ -97,6 +97,7 @@ public class SwerveSubsystem extends SubsystemBase
   private final boolean visionDriveTest = true;
   public boolean speedMode = false;
   public boolean allowVisionPose = true;
+  public boolean climbing = false;
 
   public SwerveDrive getSwerveDrive() {return swerveDrive;}
 
@@ -219,7 +220,9 @@ public class SwerveSubsystem extends SubsystemBase
       // if (poseEst.isPresent()) {
       //   swerveDrive.addVisionMeasurement(poseEst.get().estimatedPose.toPose2d(), poseEst.get().timestampSeconds);
       // }
-      swerveDrive.updateOdometry();
+      if (!climbing) {
+        swerveDrive.updateOdometry();
+      }
       // vision.updatePoseEstimation(swerveDrive);
     }
     SmartDashboard.putNumber("Robot Field X", getPose().getX());
@@ -404,8 +407,8 @@ public class SwerveSubsystem extends SubsystemBase
         xSpeed *= Constants.DrivebaseConstants.SPEED_MODE_SCALE;
         ySpeed *= Constants.DrivebaseConstants.SPEED_MODE_SCALE;
       }
-      System.out.println("position" + getPose().getTranslation());
-      System.out.println("velocity" + getFieldVelocity());
+      // System.out.("position" + getPose().getTranslation());
+      // System.out.priprintlnntln("velocity" + getFieldVelocity());
 
       Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(xSpeed,
                                                                                  ySpeed), 0.8);
@@ -667,7 +670,8 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void zeroGyro()
   {
-    swerveDrive.zeroGyro();
+    Pose2d pose = getPose();
+    resetOdometry(new Pose2d(pose.getX(), pose.getY(), new Rotation2d()));
   }
 
   /**

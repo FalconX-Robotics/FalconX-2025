@@ -7,27 +7,31 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Settings;
-import frc.robot.Util;
+import frc.robot.util.*;
 
 public class Arm extends SubsystemBase {
   SparkMax armMotor = new SparkMax(Constants.ARM_MOTOR, MotorType.kBrushless );
   RelativeEncoder armEncoder;
   Settings settings;
   double currentSetpoint;
-  PIDController pidController;
+  PIDController pid;
 
   public boolean manualOverride = false;
 
@@ -46,10 +50,14 @@ public class Arm extends SubsystemBase {
     SparkMaxConfig armMotorConfig = new SparkMaxConfig();
     armMotorConfig.idleMode( IdleMode.kBrake );
     armMotorConfig.inverted( true );
+    armMotorConfig.encoder.positionConversionFactor(Constants.ARM_CONVERSION_FACTOR);
+    
     this.armMotor.configure( armMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters );
 
     // Set the PID controller values.
-    this.pidController = new PIDController(6, 0, 1);
+    this.pid = new PIDController(4, 0, 0.2);
+    pid.setSetpoint((Math.PI/2.0)-0.2);
+    armMotor.getEncoder().setPosition(Math.PI/2 + Math.toRadians(5));
   }
 
   /**
@@ -58,11 +66,11 @@ public class Arm extends SubsystemBase {
    */
   public void setVelocity( double velocity ) {
     // Set velocity.
-    this.armMotor.set( velocity );
+    armMotor.getClosedLoopController().setReference(0, ControlType.kPosition);
   }
 
   public void setSetpoint (double setpoint) {
-    this.currentSetpoint = setpoint;
+    pid.setSetpoint(setpoint);
   }
   /**
    * Set the voltage of the motor.
@@ -70,7 +78,13 @@ public class Arm extends SubsystemBase {
    */
   public void setVoltage( double voltage ) {
     // Set voltage.
+    // voltage += 1 * Math.cos(getAngle());
     this.armMotor.setVoltage( voltage );
+
+  }
+
+  public void setInput(double input) {
+    pid.setSetpoint(pid.getSetpoint() + input * 0.01);
   }
 
   /**
@@ -78,25 +92,31 @@ public class Arm extends SubsystemBase {
    * @return The angle of the claw.
    */
   public double getAngle() {
-    // Get the # of rotations that the claw has made. Then calculate the total by 360 (rotations -> degrees).
-    SparkAbsoluteEncoder absoluteEncoder = this.armMotor.getAbsoluteEncoder();
-    double totalRotations = absoluteEncoder.getPosition();
-    double angleDegrees = totalRotations * 360 * Constants.GearRatio.armGearRatio;
-
+    
     // Return the angle.
-    return angleDegrees;
+    return armMotor.getEncoder().getPosition();
   }
 
   @Override
   public void periodic() {
-    if (!manualOverride) {
-      pidController.setSetpoint(this.currentSetpoint);
-      double pidOutput = pidController.calculate(getAngle());
-      this.armMotor.setVoltage(pidOutput);
+    // if (!manualOverride) {
+    //   pidController.setSetpoint(this.currentSetpoint);
+    //   double pidOutput = pidController.calculate(getAngle());
+    //   this.armMotor.setVoltage(pidOutput);
+    // }
+    if (true) {
+      double pidCalc = pid.calculate(getAngle());
+    
+      // pidCalc = MathUtil.clamp(pidCalc, -6, 6);
+      armMotor.setVoltage(pidCalc - Math.cos(getAngle()));
     }
+    
     angleLog.append(getAngle());
+    SmartDashboard.putNumber("Arm Angle", getAngle());
     setpointLog.append(currentSetpoint);
     velocityLog.append(armMotor.getEncoder().getVelocity());
     overrideLog.append(manualOverride);
+    System.out.println("arm setpoint " + pid.getSetpoint());
+    // System.out.println(getAngle());
   }
 }

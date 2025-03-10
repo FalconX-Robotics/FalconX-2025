@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 // import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.Util;
 import swervelib.math.Matter;
 
 /**
@@ -32,6 +33,8 @@ public final class Constants
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(4);
   public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI;
+  public static final double CLAW_MASS = 0;
+  public static final double CLAW_SPEED = 3;
 
   public static final Pose3d ROBOT_TO_CAMERA_POSE = new Pose3d(0, 0, 0.5, new Rotation3d());
 
@@ -40,8 +43,25 @@ public final class Constants
   public static final double MAX_VISION_AMBIGUITY = 0.25;
       // Maximum speed of the robot in meters per second, used to limit acceleration.
   public static final double CLAW_RADIUS = 0;
-  public static final int ELEVATOR_TOP_LIMIT_SWITCH = 2;
-  public static final int ELEVATOR_BOTTOM_LIMIT_SWITCH = 3;
+  public static final double MAX_INTAKE_SPEED = 1.0;
+  public static final double MAX_RELEASE_SPEED = -1.0;
+  public static final double MAX_ANGLE_UP_SPEED = 1.0;
+  public static final double MAX_ANGLE_DOWN_SPEED = -1.0;
+
+  public static final Pose2d STARTING_POSE = new Pose2d();
+
+  public static final int CORAL_SENSOR = 9;
+  public static final int ARM_MOTOR = 20;
+  public static final int FEEDER_MOTOR = 21;
+  public static final int INTAKE_MOTOR = 22;
+  public static final int ELEVATOR_MOTOR = 30;
+  public static final int CLIMB_ID = 40;
+
+  public static final int LED_PORT = 1;
+  public static final int ELEVATOR_HIGH_SWITCH = 7;
+  public static final int ELEVATOR_LOW_SWITCH = 8;
+
+  public static final double ARM_CONVERSION_FACTOR = (1.0/(6.21430317958)) * Math.PI/2;
 
   public static final class AutonConstants
   {
@@ -56,7 +76,7 @@ public final class Constants
     public static final double SPEED_MODE_SCALE = 0.2;
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
-    public static final double SPEED_MODE_SCALE = 0.5;
+    // public static final double SPEED_MODE_SCALE = 0.5;
   }
 
   public static class OperatorConstants

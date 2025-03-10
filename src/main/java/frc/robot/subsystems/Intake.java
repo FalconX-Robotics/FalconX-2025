@@ -8,7 +8,7 @@ import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Util;
+import frc.robot.util.*;
 
 public class Intake extends SubsystemBase{
     SparkMax intakeMotor = new SparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
@@ -37,5 +37,10 @@ public class Intake extends SubsystemBase{
         intakeVelocityLog.append(intakeMotor.getEncoder().getVelocity());
         feederVelocityLog.append(feederMotor.getEncoder().getVelocity());
         coralLog.append(hasCoral());
+    }
+
+    public void set(double speed) {
+        setMotor(speed);
+        setFeeder(speed/7);
     }
 }

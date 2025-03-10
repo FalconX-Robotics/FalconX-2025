@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Starting point 1 to Reef 1L"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Outtake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 1L to Source Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source Right to Reef 1R"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Outtake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 1R to Source Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source Right to Reef 6L"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

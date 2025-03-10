@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": -0.5179687499994676,
-        "y": 2.5853515625036185
+        "x": 1.73671875,
+        "y": 7.239453125
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.4820312500005333,
-        "y": 2.5853515625036185
+        "x": 3.0060291796535012,
+        "y": 5.483594813931154
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Source Right"
     },
     {
       "anchor": {
-        "x": 10.008984374999994,
-        "y": 5.799804687503879
+        "x": 2.95546875,
+        "y": 4.192578125
       },
       "prevControl": {
-        "x": 9.008984374999994,
-        "y": 5.799804687503879
+        "x": 2.773493359989635,
+        "y": 4.363998536359253
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef 6L"
     }
   ],
   "rotationTargets": [],
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 125.72739822279975
   },
   "useDefaultConstraints": true
 }

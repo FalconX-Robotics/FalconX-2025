@@ -105,8 +105,8 @@ public class AbsoluteDrive extends Command
     // System.out.println(translation);
     // translation = translation;
     // Make the robot move
-    System.out.println("Desired Speeds: " + desiredSpeeds);
-    System.out.println("Translation: " + translation);
+    // System.out.println("Desired Speeds: " + desiredSpeeds);
+    // System.out.println("Translation: " + translation);
     SmartDashboard.putNumber("Robot Movement Angle", translation.getAngle().getDegrees());
     swerve.drive(translation, headingHorizontal.getAsDouble(), true);
     // swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true);

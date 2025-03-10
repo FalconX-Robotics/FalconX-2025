@@ -33,6 +33,12 @@ import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 import frc.robot.commands.swervedrive.drivebase.ChangeSpeed;
 import frc.robot.commands.swervedrive.drivebase.LineUpReef;
 import frc.robot.commands.swervedrive.drivebase.PointToTarget;
+import frc.robot.commands.swervedrive.intake.GrabCoral;
+import frc.robot.commands.swervedrive.intake.Release;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.util.Util;
 import swervelib.encoders.SwerveAbsoluteEncoder;
@@ -166,21 +172,19 @@ public class RobotContainer
       // drivebase.setDefaultCommand(absoluteDrive);
     } else
     {
-      Command driveToPointA = swerve.driveToPose(new Pose2d(3,2,new Rotation2d(Math.PI/2)));
-      Command driveToPointB = swerve.driveToPose(new Pose2d(1,1,new Rotation2d(Math.PI)));
-      Command driveToPointC = swerve.driveToPose(new Pose2d(2,2,new Rotation2d(0)));
-      // driverXbox.a().onTrue(getAutonomousCommand());
-      // driverXbox.x().whileTrue(swerve.aimAtTarget(swerve.getVision().camera));
-      // // driverXbox.b().whileTrue(new ChangeSpeed(swerve));
-      driverXbox.rightTrigger().whileTrue(new ChangeSpeed(swerve));
-      driverXbox.start().onTrue((Commands.runOnce(swerve::zeroGyro)));
-      // driverXbox.y().whileTrue(new PointToTarget(swerve));
-      // driverXbox.back().onTrue(driveToPointA);
-      // driverXbox.leftBumper().onTrue(driveToPointB);
-      // driverXbox.rightBumper().onTrue(new LineUpReef(swerve, 3, LineUpReef.Side.LEFT));
-      // // driverXbox.start().onTrue(driveToPointA.andThen(driveToPointB.andThen(driveToPointC)));
-      // driverXbox.leftTrigger().onTrue(new LineUpReef(swerve, 4, LineUpReef.Side.RIGHT));
+      // driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      settings.driverSettings.speedModeButton.whileTrue(new ChangeSpeed(swerve));
       swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
+
+      // settings.armSettings.overrideArm.whileTrue(new ChangeIntakeAngle(arm, operatorXbox));
+      settings.armSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings, operatorXbox));
+      settings.armSettings.realeaseButton.whileTrue(new Release(intake, settings));
+      arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
+      
+      settings.armSettings.climbButton.whileTrue(new ClimbCommand(climb, swerve, false, settings));
+      settings.armSettings.unClimbButton.whileTrue(new ClimbCommand(climb, swerve, true, settings));
+
+      elevator.setDefaultCommand(new ManualElevator(elevator, operatorXbox));
     }
   }
 
@@ -196,11 +200,12 @@ public class RobotContainer
     // return drivebase.driveToDistanceCommand(1, 0.1);
     // return drivebase.driveToDistanceCommand(200, 0.5);
     // An example command will be run in autonomous
-    return drivebase.getAutonomousCommand("PID Test");
+    // return drivebase.getAutonomousCommand("PID Test");
   }
 
   public void setDriveMode()
   {
+    elevator.setSetpoint(0);
     configureBindings();
   }
 

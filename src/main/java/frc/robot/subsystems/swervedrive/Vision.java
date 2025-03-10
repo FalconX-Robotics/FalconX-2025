@@ -14,6 +14,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -65,6 +66,7 @@ public class Vision {
         }
     }
 
+    // Robot relative Pose
     public Optional<Transform3d> getTagPose(int id) {
         Optional<PhotonPipelineResult> result = getLastResult();
         if (result.isEmpty()) return Optional.empty();
@@ -106,4 +108,13 @@ public class Vision {
         Field2d visionSimField = visionSim.getDebugField(); 
         SmartDashboard.putData("Vision Sim Field", visionSimField);
     }
+    
+    public boolean linedUpReef() {
+        boolean hasEllipse = SmartDashboard.getBoolean("NT_Vision/has_ellipse", false);
+        if (!hasEllipse) return false;
+        double ellipseX = SmartDashboard.getNumber("NT_Vision/ellipse_loc_x", 0.0);
+        double ellipseY = SmartDashboard.getNumber("NT_Vision/ellipse_loc_y", 0.0);
+        return MathUtil.isNear(0, ellipseX, 15) && MathUtil.isNear(0, ellipseY, 15);
+    }
 }
+

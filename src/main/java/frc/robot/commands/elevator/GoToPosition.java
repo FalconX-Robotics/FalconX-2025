@@ -38,7 +38,7 @@ public class GoToPosition extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        elevator.setVelocity(0);
+        elevator.setInput(0);
     }
 
     @Override

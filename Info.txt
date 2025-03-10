@@ -1,0 +1,11 @@
+y button elevator lock
+b button arm lock	# 1
+
+
+			# 2
+	1     2
+        O --- O
+       /       \	# 3
+   6  O         O 3
+       \       /
+    5   O --- O 4

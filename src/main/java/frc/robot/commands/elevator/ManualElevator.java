@@ -1,5 +1,6 @@
 package frc.robot.commands.elevator;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -16,18 +17,14 @@ public class ManualElevator extends Command{
     }
 
     @Override
-    public void initialize() {
-        elevator.override =true;
-    }
-
-    @Override
     public void execute() {
-        
-        elevator.setVelocity(xbox.getLeftY()/2);
-    }
-    @Override
-    public void end(boolean interrupted) {
-        elevator.override = false;
+        double input = xbox.getLeftY();
+        input = MathUtil.applyDeadband(input, 0.1);
+        System.out.println("elevator input " + input);
+        if (elevator.atLimit()) {
+            input = Math.min(0.0,input);
+        }
+        elevator.setInput(input);
     }
 }
 

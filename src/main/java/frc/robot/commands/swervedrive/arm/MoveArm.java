@@ -17,7 +17,6 @@ public class MoveArm extends Command {
   Arm arm;
   CommandXboxController xboxController;
 
-  boolean usingPID = false;
 
   /** 
    * Creates a new Arm.
@@ -40,32 +39,12 @@ public class MoveArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    // boolean startButtonPressed = this.xboxController.start().getAsBoolean();
-
-    // if ( startButtonPressed ) usingPID = !usingPID;
-    //   // Define the angles by the buttons.
-    //   final double aButtonAngle = 20;
-    //   final double bButtonAngle = 45;
-    //   final double xButtonAngle = 60;
-
-    //   // Get the current states of the buttons.
-    //   final boolean aButtonPressed = this.xboxController.a().getAsBoolean();
-    //   final boolean bButtonPressed = this.xboxController.b().getAsBoolean();
-    //   final boolean xButtonPressed = this.xboxController.x().getAsBoolean();
-
-    //   // Set the setpoint of the PID controller.
-    //   if ( aButtonPressed ) this.arm.setSetpoint(aButtonAngle);
-    //   if ( bButtonPressed ) this.arm.setSetpoint(bButtonAngle);
-    //   if ( xButtonPressed ) this.arm.setSetpoint(xButtonAngle);
-
-    arm.setVoltage(xboxController.getRightY()  * 2);
-  }
+    arm.setInput(xboxController.getRightY() * 1);
+  } 
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    arm.setVoltage(0);
     arm.manualOverride = false;
   }
 
