@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
@@ -31,7 +32,8 @@ public class Arm extends SubsystemBase {
   RelativeEncoder armEncoder;
   Settings settings;
   double currentSetpoint;
-  PIDController pid;
+  PIDController pid = new PIDController(6, 0, 0.4);
+  ArmFeedforward feedforward = new ArmFeedforward(0, 0.17, 2.50, 0.01);
 
   public boolean manualOverride = false;
 
@@ -55,18 +57,8 @@ public class Arm extends SubsystemBase {
     this.armMotor.configure( armMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters );
 
     // Set the PID controller values.
-    this.pid = new PIDController(4, 0, 0.2);
     pid.setSetpoint((Math.PI/2.0)-0.2);
     armMotor.getEncoder().setPosition(Math.PI/2 + Math.toRadians(5));
-  }
-
-  /**
-   * Set the velocity of the motor.
-   * @param velocity The velocity value of the motor. Ranges -1 (100% CCW) to +1 (100% CW)
-   */
-  public void setVelocity( double velocity ) {
-    // Set velocity.
-    armMotor.getClosedLoopController().setReference(0, ControlType.kPosition);
   }
 
   public void setSetpoint (double setpoint) {
@@ -77,8 +69,6 @@ public class Arm extends SubsystemBase {
    * @param voltage The voltage value of the motor. Ranges -12 (100% CCW) to +12 (100% CW)
    */
   public void setVoltage( double voltage ) {
-    // Set voltage.
-    // voltage += 1 * Math.cos(getAngle());
     this.armMotor.setVoltage( voltage );
 
   }
@@ -99,17 +89,13 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // if (!manualOverride) {
-    //   pidController.setSetpoint(this.currentSetpoint);
-    //   double pidOutput = pidController.calculate(getAngle());
-    //   this.armMotor.setVoltage(pidOutput);
-    // }
-    if (true) {
-      double pidCalc = pid.calculate(getAngle());
-    
-      // pidCalc = MathUtil.clamp(pidCalc, -6, 6);
-      armMotor.setVoltage(pidCalc - Math.cos(getAngle()));
-    }
+    double pidCalc = pid.calculate(getAngle());
+    SmartDashboard.putNumber("arm/PID Output", pidCalc);
+    double ffCalc = feedforward.calculate(pid.getSetpoint(), pidCalc);
+    SmartDashboard.putNumber("arm/FF Output", ffCalc);
+
+    // armMotor.setVoltage(pidCalc - Math.cos(getAngle()));
+    armMotor.setVoltage(pidCalc);
     
     angleLog.append(getAngle());
     SmartDashboard.putNumber("Arm Angle", getAngle());

@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.*;
 
+@Logged
 public class Intake extends SubsystemBase{
     SparkMax intakeMotor = new SparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
     SparkMax feederMotor = new SparkMax(Constants.FEEDER_MOTOR, MotorType.kBrushless);
@@ -20,13 +22,21 @@ public class Intake extends SubsystemBase{
     BooleanLogEntry coralLog = Util.createBooleanLog("intake/coral");
     
     //positive is intake
-    public void setMotor(double voltage) {
+    public void setPrimaryMotor(double voltage) {
         intakeMotor.set(voltage);
+    }
+
+    public double getPrimaryMotor() {
+        return intakeMotor.get();
     }
 
     // positive is intake
     public void setFeeder(double voltage) {
         feederMotor.set(voltage);
+    }
+
+    public double getFeeder() {
+        return feederMotor.get();
     }
 
     public boolean hasCoral() {
@@ -40,7 +50,7 @@ public class Intake extends SubsystemBase{
     }
 
     public void set(double speed) {
-        setMotor(speed);
+        setPrimaryMotor(speed);
         setFeeder(speed/7);
     }
 }

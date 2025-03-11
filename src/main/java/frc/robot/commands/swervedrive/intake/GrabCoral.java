@@ -28,7 +28,7 @@ public class GrabCoral extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intake.setMotor(0);
+        intake.setPrimaryMotor(0);
         intake.setFeeder(0);
     }
 
