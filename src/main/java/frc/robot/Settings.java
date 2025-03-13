@@ -48,14 +48,15 @@ public class Settings {
     public class OperatorSettings {
         public Trigger coralIntakeButton       = operatorController.x();
         public Trigger armAngleButton          = operatorController.b();
-        public Trigger realeaseButton    = operatorController.a();
+        public Trigger releaseButton    = operatorController.a();
+        public Trigger L3Button = operatorController.y();
         public Trigger overrideArm = new Trigger(() -> {return Math.abs(operatorController.getRightY()) > 0.1;});
 
         public Trigger climbButton = operatorController.leftBumper();
         public Trigger unClimbButton = operatorController.rightBumper();
 
         public final double intakeSpeed = -1/3.0;
-        public final double releaseSpeed = 1;
+        public final double releaseSpeed = 0.7;
 
         public double climbSpeed = 5;
 

@@ -21,9 +21,6 @@ public class ManualElevator extends Command{
         double input = xbox.getLeftY();
         input = MathUtil.applyDeadband(input, 0.1);
         System.out.println("elevator input " + input);
-        if (elevator.atLimit()) {
-            input = Math.min(0.0,input);
-        }
         elevator.setInput(input);
     }
 }

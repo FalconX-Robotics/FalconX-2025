@@ -22,6 +22,11 @@ public class GrabCoral extends Command {
     }
 
     @Override
+    public void initialize() {
+        intake.intaking = true;
+    }
+
+    @Override
     public void execute() {
         intake.set(settings.armSettings.intakeSpeed);
     }
@@ -30,6 +35,7 @@ public class GrabCoral extends Command {
     public void end(boolean interrupted) {
         intake.setPrimaryMotor(0);
         intake.setFeeder(0);
+        intake.intaking = false;
     }
 
     @Override

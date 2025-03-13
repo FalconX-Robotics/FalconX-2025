@@ -57,12 +57,15 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
         double motorOut = pid.calculate(getHeight());
         
-        System.out.println(motorOut);
+        System.out.println(pid.getSetpoint());
 
         if (!bottomLimitSwitch.get()) {
              motorOut = (Math.min(0, motorOut));
              System.out.println("bottom limit");
         }
+
+        SmartDashboard.putBoolean("Bottom Limit", !bottomLimitSwitch.get());
+        SmartDashboard.putBoolean("Upper Limit", topLimitSwitch.get());
         System.out.println(motorOut);
 
         elevatorSparkMax.set(motorOut);
@@ -77,10 +80,10 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setSetpoint(double position) {
-        pid.setSetpoint(Math.min(0, position));
+        pid.setSetpoint(position);
     }
     public void setInput(double input) {
-        pid.setSetpoint(pid.getSetpoint() + input/15.0);
+        pid.setSetpoint(pid.getSetpoint() + input/40.0);
     }
 
     //idk what units these are
@@ -89,6 +92,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean atLimit() {
-        return !topLimitSwitch.get();
+        return topLimitSwitch.get();
     }
 }

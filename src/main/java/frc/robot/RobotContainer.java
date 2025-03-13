@@ -22,12 +22,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.climb.ClimbCommand;
 import frc.robot.commands.elevator.ManualElevator;
 import frc.robot.commands.swervedrive.arm.MoveArm;
+import frc.robot.commands.swervedrive.auto.GoToArmPosition;
+import frc.robot.commands.swervedrive.auto.GoToArmPosition.Position;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
@@ -111,7 +114,7 @@ public class RobotContainer
       () -> -driverXbox.getRightX(),
       () -> -driverXbox.getRightY());
 
-  Command driveInputs = swerve.driveInputs(()->driverXbox.getLeftY(), ()->driverXbox.getLeftX(), ()->driverXbox.getRightX());
+  Command driveInputs = new ParallelCommandGroup(new ChangeSpeed(swerve), swerve.driveInputs(()->-driverXbox.getLeftY(), ()->-driverXbox.getLeftX(), ()->-driverXbox.getRightX()));
 
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -174,16 +177,18 @@ public class RobotContainer
     } else
     {
       // driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      settings.driverSettings.speedModeButton.whileTrue(new ChangeSpeed(swerve));
+      settings.driverSettings.speedModeButton.whileTrue(driveInputs);
       swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
 
       // settings.armSettings.overrideArm.whileTrue(new ChangeIntakeAngle(arm, operatorXbox));
       settings.armSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings, operatorXbox));
-      settings.armSettings.realeaseButton.whileTrue(new Release(intake, settings));
+      settings.armSettings.releaseButton.whileTrue(new Release(intake, settings));
       arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
       
       settings.armSettings.climbButton.whileTrue(new ClimbCommand(climb, swerve, false, settings));
       settings.armSettings.unClimbButton.whileTrue(new ClimbCommand(climb, swerve, true, settings));
+
+      settings.armSettings.L3Button.whileTrue(new GoToArmPosition(Position.L3, arm, elevator));
 
       elevator.setDefaultCommand(new ManualElevator(elevator, operatorXbox));
     }

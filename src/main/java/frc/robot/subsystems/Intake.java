@@ -20,6 +20,9 @@ public class Intake extends SubsystemBase{
     DoubleLogEntry intakeVelocityLog = Util.createDoubleLog("intake/Intake Velocity");
     DoubleLogEntry feederVelocityLog = Util.createDoubleLog("intake/Feeder Velocity");
     BooleanLogEntry coralLog = Util.createBooleanLog("intake/coral");
+    BooleanLogEntry intakingLog = Util.createBooleanLog("intake/intaking");
+
+    public boolean intaking;
     
     //positive is intake
     public void setPrimaryMotor(double voltage) {
@@ -44,6 +47,7 @@ public class Intake extends SubsystemBase{
     }
     @Override
     public void periodic() {
+        intakingLog.append(intaking);
         intakeVelocityLog.append(intakeMotor.getEncoder().getVelocity());
         feederVelocityLog.append(feederMotor.getEncoder().getVelocity());
         coralLog.append(hasCoral());
@@ -51,6 +55,6 @@ public class Intake extends SubsystemBase{
 
     public void set(double speed) {
         setPrimaryMotor(speed);
-        setFeeder(speed/7);
+        setFeeder(speed/4);
     }
 }

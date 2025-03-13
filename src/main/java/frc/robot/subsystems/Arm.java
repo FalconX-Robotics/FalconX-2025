@@ -21,6 +21,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -33,7 +34,7 @@ public class Arm extends SubsystemBase {
   Settings settings;
   double currentSetpoint;
   PIDController pid = new PIDController(6, 0, 0.4);
-  ArmFeedforward feedforward = new ArmFeedforward(0, 0.17, 2.50, 0.01);
+  ArmFeedforward feedforward = new ArmFeedforward(0, 0.17, 2.50, 0.02);
 
   public boolean manualOverride = false;
 
@@ -74,6 +75,8 @@ public class Arm extends SubsystemBase {
   }
 
   public void setInput(double input) {
+    input = MathUtil.applyDeadband(input, 0.1);
+    input *= 1.8;
     pid.setSetpoint(pid.getSetpoint() + input * 0.01);
   }
 
@@ -99,7 +102,7 @@ public class Arm extends SubsystemBase {
     
     angleLog.append(getAngle());
     SmartDashboard.putNumber("Arm Angle", getAngle());
-    setpointLog.append(currentSetpoint);
+    setpointLog.append(pid.getSetpoint());
     velocityLog.append(armMotor.getEncoder().getVelocity());
     overrideLog.append(manualOverride);
     System.out.println("arm setpoint " + pid.getSetpoint());
