@@ -41,12 +41,13 @@ public class GoToArmPosition extends Command {
     @Override
     public void initialize() {
         arm.setSetpoint(position.angle);
-        elevator.setSetpoint(position.height);
+        // elevator.setSetpoint(position.height);
     }
 
     @Override
     public boolean isFinished() {
         return MathUtil.isNear(position.angle, arm.getAngle(), 0.01) &&
-               MathUtil.isNear(position.height, elevator.getHeight(), 0.01);
+            //    MathUtil.isNear(position.height, elevator.getHeight(), 0.01) &&
+               true;
     }
 }

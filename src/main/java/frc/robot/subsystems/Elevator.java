@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -57,16 +58,19 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
         double motorOut = pid.calculate(getHeight());
         
-        System.out.println(pid.getSetpoint());
 
         if (!bottomLimitSwitch.get()) {
-             motorOut = (Math.min(0, motorOut));
-             System.out.println("bottom limit");
+             motorOut = Math.min(0, motorOut);
         }
+        if (atLimit()) {
+            motorOut = Math.max(0.1, motorOut);
+        }
+
+        motorOut = MathUtil.clamp(motorOut, -0.4, 0.4);
 
         SmartDashboard.putBoolean("Bottom Limit", !bottomLimitSwitch.get());
         SmartDashboard.putBoolean("Upper Limit", topLimitSwitch.get());
-        System.out.println(motorOut);
+        SmartDashboard.putNumber("Elevator Speed", elevatorSparkMax.get());
 
         elevatorSparkMax.set(motorOut);
 
@@ -74,8 +78,7 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putNumber("Elevator Position", getHeight());
         setpointLog.append(pid.getSetpoint());
         heightLog.append(getHeight());
-        System.out.println("elevatr setpoint " + pid.getSetpoint());
-        
+            
         // if (!bottomLimitSwitch.get()) elevatorSparkMax.set(Math.min(0, elevatorSparkMax.get()));
     }
 

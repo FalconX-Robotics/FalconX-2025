@@ -40,6 +40,6 @@ public class GrabCoral extends Command {
 
     @Override
     public boolean isFinished() {
-        return intake.hasCoral() && settings.armSettings.intakeSpeed > 0;
+        return settings.armSettings.intakeSpeed > 0;
     }
 }

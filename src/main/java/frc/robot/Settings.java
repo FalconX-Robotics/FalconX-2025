@@ -23,40 +23,47 @@ public class Settings {
     }
     public class DriverSettings {
         public Trigger speedModeButton = driveController.rightTrigger();
+        public Trigger invertButton = driveController.start();
+        public boolean inverted = false;
+
         public double getLeftX() {
             double axis = driveController.getLeftX();
             axis = MathUtil.applyDeadband(axis, 0.1);
+            if (inverted) {axis = -axis;}
             return axis;
         }
         public double getLeftY() {
             double axis = driveController.getLeftY();
             axis = MathUtil.applyDeadband(axis, 0.1);
+            if (inverted) {axis = -axis;}
             return axis;
         }
         public double getRightX() {
             double axis = driveController.getRightX();
             axis = MathUtil.applyDeadband(axis, 0.1);
+            if (inverted) {axis = -axis;}
             return axis;
         }
         public double getRightY() {
             double axis = driveController.getRightY();
             axis = MathUtil.applyDeadband(axis, 0.1);
+            if (inverted) {axis = -axis;}
             return axis;
         }
     }
     /**Controller bindings and such for controlling arm and arm adjacent parts (eg:intake and elevator) */
     public class OperatorSettings {
         public Trigger coralIntakeButton       = operatorController.x();
-        public Trigger armAngleButton          = operatorController.b();
-        public Trigger releaseButton    = operatorController.a();
-        public Trigger L3Button = operatorController.y();
+        // public Trigger armAngleButton          = operatorController.b();
+        public Trigger releaseButton    = operatorController.b();
+        public Trigger travelButton = operatorController.y();
         public Trigger overrideArm = new Trigger(() -> {return Math.abs(operatorController.getRightY()) > 0.1;});
 
         public Trigger climbButton = operatorController.leftBumper();
         public Trigger unClimbButton = operatorController.rightBumper();
 
         public final double intakeSpeed = -1/3.0;
-        public final double releaseSpeed = 0.7;
+        public final double releaseSpeed = 0.5;
 
         public double climbSpeed = 5;
 

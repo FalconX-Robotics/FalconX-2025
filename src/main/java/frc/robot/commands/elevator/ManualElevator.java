@@ -20,7 +20,6 @@ public class ManualElevator extends Command{
     public void execute() {
         double input = xbox.getLeftY();
         input = MathUtil.applyDeadband(input, 0.1);
-        System.out.println("elevator input " + input);
         elevator.setInput(input);
     }
 }

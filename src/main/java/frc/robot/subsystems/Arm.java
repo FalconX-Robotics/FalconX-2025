@@ -76,7 +76,7 @@ public class Arm extends SubsystemBase {
 
   public void setInput(double input) {
     input = MathUtil.applyDeadband(input, 0.1);
-    input *= 1.8;
+    input *= 1.8 * 1.8 * 1.8 * 1.8;
     pid.setSetpoint(pid.getSetpoint() + input * 0.01);
   }
 
@@ -97,6 +97,8 @@ public class Arm extends SubsystemBase {
     double ffCalc = feedforward.calculate(pid.getSetpoint(), pidCalc);
     SmartDashboard.putNumber("arm/FF Output", ffCalc);
 
+    pidCalc = MathUtil.clamp(pidCalc, -2, 2);
+
     // armMotor.setVoltage(pidCalc - Math.cos(getAngle()));
     armMotor.setVoltage(pidCalc);
     
@@ -105,7 +107,6 @@ public class Arm extends SubsystemBase {
     setpointLog.append(pid.getSetpoint());
     velocityLog.append(armMotor.getEncoder().getVelocity());
     overrideLog.append(manualOverride);
-    System.out.println("arm setpoint " + pid.getSetpoint());
     // System.out.println(getAngle());
   }
 }

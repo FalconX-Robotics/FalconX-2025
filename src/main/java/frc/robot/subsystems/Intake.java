@@ -15,7 +15,7 @@ import frc.robot.util.*;
 public class Intake extends SubsystemBase{
     SparkMax intakeMotor = new SparkMax(Constants.INTAKE_MOTOR, MotorType.kBrushless);
     SparkMax feederMotor = new SparkMax(Constants.FEEDER_MOTOR, MotorType.kBrushless);
-    DigitalInput coralSensor = new DigitalInput(Constants.CORAL_SENSOR);
+    // DigitalInput coralSensor = new DigitalInput(Constants.CORAL_SENSOR);
 
     DoubleLogEntry intakeVelocityLog = Util.createDoubleLog("intake/Intake Velocity");
     DoubleLogEntry feederVelocityLog = Util.createDoubleLog("intake/Feeder Velocity");
@@ -41,16 +41,11 @@ public class Intake extends SubsystemBase{
     public double getFeeder() {
         return feederMotor.get();
     }
-
-    public boolean hasCoral() {
-        return coralSensor.get();
-    }
     @Override
     public void periodic() {
         intakingLog.append(intaking);
         intakeVelocityLog.append(intakeMotor.getEncoder().getVelocity());
         feederVelocityLog.append(feederMotor.getEncoder().getVelocity());
-        coralLog.append(hasCoral());
     }
 
     public void set(double speed) {
