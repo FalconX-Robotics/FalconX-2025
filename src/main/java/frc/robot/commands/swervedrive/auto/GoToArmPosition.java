@@ -10,9 +10,9 @@ public class GoToArmPosition extends Command {
     private Arm arm;
     private Elevator elevator;
     
-    private Position position;
+    private ArmElevatorPosition position;
 
-    public static enum Position {
+    public static enum ArmElevatorPosition {
         INTAKE(0,0.7144467287606601),
         L1(0,0.12689228997496202),
         L2(-0.03318296592268683,0.30161103997496275),
@@ -25,13 +25,13 @@ public class GoToArmPosition extends Command {
         public final double height;
         public final double angle;
 
-        Position(double elevator, double arm) {
+        ArmElevatorPosition(double elevator, double arm) {
             height = elevator;
             angle = arm;
         }
     }
 
-    public GoToArmPosition(Position position, Arm arm, Elevator elevator) {
+    public GoToArmPosition(ArmElevatorPosition position, Arm arm, Elevator elevator) {
         this.position = position;
         this.arm = arm;
         this.elevator = elevator;

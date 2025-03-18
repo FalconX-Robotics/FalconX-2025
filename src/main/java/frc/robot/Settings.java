@@ -61,6 +61,8 @@ public class Settings {
 
         public Trigger climbButton = operatorController.leftBumper();
         public Trigger unClimbButton = operatorController.rightBumper();
+        public Trigger moveToL2 = operatorController.rightStick();
+        public Trigger moveToL3 = operatorController.leftStick();
 
         public final double intakeSpeed = -1/3.0;
         public final double releaseSpeed = 0.5;

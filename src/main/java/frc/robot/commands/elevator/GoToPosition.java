@@ -41,10 +41,4 @@ public class GoToPosition extends Command {
         elevator.setInput(0);
     }
 
-    @Override
-    public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return super.isFinished();
-    }
-
 }

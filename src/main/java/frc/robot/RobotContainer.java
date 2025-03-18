@@ -38,7 +38,7 @@ import frc.robot.commands.elevator.GoToPosition;
 import frc.robot.commands.elevator.ManualElevator;
 import frc.robot.commands.swervedrive.arm.MoveArm;
 import frc.robot.commands.swervedrive.auto.GoToArmPosition;
-import frc.robot.commands.swervedrive.auto.GoToArmPosition.Position;
+import frc.robot.commands.swervedrive.auto.GoToArmPosition.ArmElevatorPosition;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
@@ -241,8 +241,10 @@ public class RobotContainer
     
     settings.armSettings.climbButton.whileTrue(new ClimbCommand(climb, swerve, false, settings));
     settings.armSettings.unClimbButton.whileTrue(new ClimbCommand(climb, swerve, true, settings));
+    settings.armSettings.moveToL2.whileTrue(new GoToArmPosition(ArmElevatorPosition.L2, arm, elevator));
+    settings.armSettings.moveToL3.whileTrue(new GoToArmPosition(ArmElevatorPosition.L3, arm, elevator));
 
-    settings.armSettings.travelButton.whileTrue(new GoToArmPosition(Position.TRAVEL, arm, elevator));
+    settings.armSettings.travelButton.whileTrue(new GoToArmPosition(ArmElevatorPosition.TRAVEL, arm, elevator));
 
     elevator.setDefaultCommand(new ManualElevator(elevator, operatorXbox));
   }
