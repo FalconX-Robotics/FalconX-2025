@@ -1,15 +1,9 @@
 package frc.robot.commands.swervedrive.drivebase;
 
-import static edu.wpi.first.units.Units.Rotation;
-
-import java.io.Serializable;
-import java.nio.channels.ScatteringByteChannel;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -22,10 +16,10 @@ public class LineUpReef extends Command {
         LEFT,
         RIGHT
     }
-    private static enum State {
-        DRIVE,
-        CORRECT
-    }
+    // private static enum State {
+    //     DRIVE,
+    //     CORRECT
+    // }
 
     private SwerveSubsystem swerve;
     private Vision vision;

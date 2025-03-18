@@ -5,46 +5,30 @@
 package frc.robot;
 
 import java.io.File;
-import java.io.OutputStream;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTablesJNI;
-import edu.wpi.first.util.PixelFormat;
-import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.climb.ClimbCommand;
-import frc.robot.commands.elevator.GoToPosition;
 import frc.robot.commands.elevator.ManualElevator;
 import frc.robot.commands.swervedrive.arm.MoveArm;
 import frc.robot.commands.swervedrive.auto.GoToArmPosition;
 import frc.robot.commands.swervedrive.auto.GoToArmPosition.ArmElevatorPosition;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 import frc.robot.commands.swervedrive.drivebase.ChangeSpeed;
-import frc.robot.commands.swervedrive.drivebase.LineUpReef;
-import frc.robot.commands.swervedrive.drivebase.PointToTarget;
 import frc.robot.commands.swervedrive.intake.GrabCoral;
 import frc.robot.commands.swervedrive.intake.Release;
 import frc.robot.subsystems.Arm;
@@ -53,23 +37,10 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.util.Util;
-import swervelib.encoders.SwerveAbsoluteEncoder;
 
-import java.io.File;
-import java.nio.file.FileSystem;
 import java.time.LocalDateTime;
-import java.util.function.BooleanSupplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very

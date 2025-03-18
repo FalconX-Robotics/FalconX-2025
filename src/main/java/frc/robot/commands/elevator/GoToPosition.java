@@ -1,6 +1,5 @@
 package frc.robot.commands.elevator;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj2.command.Command;
