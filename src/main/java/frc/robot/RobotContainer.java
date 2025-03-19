@@ -34,7 +34,7 @@ import frc.robot.commands.swervedrive.intake.Release;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.util.Util;
 
@@ -62,7 +62,7 @@ public class RobotContainer
   private final Arm arm = new Arm();
   private final Elevator elevator = new Elevator();
   
-  private final Climb climb = new Climb();
+  private final Climber climber = new Climber();
 
   
 
@@ -202,7 +202,7 @@ public class RobotContainer
   {
     // driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     settings.driverSettings.speedModeButton.whileTrue(driveInputs);
-    settings.driverSettings.invertButton.onTrue(Commands.runOnce(()-> {settings.driverSettings.inverted = !settings.driverSettings.inverted;}, climb));
+    settings.driverSettings.invertButton.onTrue(Commands.runOnce(()-> {settings.driverSettings.inverted = !settings.driverSettings.inverted;}, climber));
     swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
 
     // settings.armSettings.overrideArm.whileTrue(new ChangeIntakeAngle(arm, operatorXbox));
@@ -210,8 +210,8 @@ public class RobotContainer
     settings.armSettings.releaseButton.whileTrue(new Release(intake, settings));
     arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
     
-    settings.armSettings.climbButton.whileTrue(new ClimbCommand(climb, swerve, false, settings));
-    settings.armSettings.unClimbButton.whileTrue(new ClimbCommand(climb, swerve, true, settings));
+    settings.armSettings.climbButton.whileTrue(new ClimbCommand(climber, swerve, false, settings));
+    settings.armSettings.unClimbButton.whileTrue(new ClimbCommand(climber, swerve, true, settings));
     settings.armSettings.moveToL2.whileTrue(new GoToArmPosition(ArmElevatorPosition.L2, arm, elevator));
     settings.armSettings.moveToL3.whileTrue(new GoToArmPosition(ArmElevatorPosition.L3, arm, elevator));
 

@@ -166,8 +166,7 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   @Override
-  public void periodic()
-  {
+  public void periodic() {
     xPositionLog.append(getPose().getX());
     teleopLog.append(DriverStation.isTeleopEnabled());
     autoLog.append(DriverStation.isAutonomousEnabled());

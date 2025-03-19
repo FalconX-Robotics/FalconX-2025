@@ -5,6 +5,7 @@ import java.util.HashMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 
+//TODO: this class is never used. it should probably be removed or at least have a proper finished() override
 public class GoToPosition extends Command {
 
     public static enum Level {
@@ -12,6 +13,7 @@ public class GoToPosition extends Command {
         LEVEL_2,
         LEVEL_3,
         LEVEL_4
+        // Why doesn't this have a constructor?
     }
 
     Level level;
