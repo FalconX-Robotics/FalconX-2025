@@ -15,14 +15,14 @@ public class ClimbCommand extends Command {
         this.settings = settings;
         this.climb = climb;
         this.swerve = swerve;
-        addRequirements(climb, swerve);
+        addRequirements(climb); //do not put swerve here
         this.reversed = reversed;
     }
 
     @Override
     public void initialize() {
         swerve.climbing = true;
-       if (reversed == true) climb.motorRun(-settings.armSettings.climbSpeed);
+       if (reversed) climb.motorRun(-settings.armSettings.climbSpeed);
        else climb.motorRun(settings.armSettings.climbSpeed);
     }
 

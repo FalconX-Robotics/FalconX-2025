@@ -59,7 +59,7 @@ public class RobotContainer
                                                                          "swerve"));
   private final Settings settings = new Settings(driverXbox, operatorXbox);
   private final Intake intake = new Intake();
-  private final Arm arm = new Arm(settings);
+  private final Arm arm = new Arm();
   private final Elevator elevator = new Elevator();
   
   private final Climb climb = new Climb();

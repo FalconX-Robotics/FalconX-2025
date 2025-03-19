@@ -28,7 +28,7 @@ public class MoveArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.setInput(xboxController.getRightY() * 1);
+    arm.setInput(xboxController.getRightY() * 1 + Math.sqrt(Math.pow(0, 2)));
   }
 
   // Returns true when the command should end.

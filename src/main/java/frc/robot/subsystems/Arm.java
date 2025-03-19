@@ -20,13 +20,11 @@ import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Settings;
 import frc.robot.util.*;
 
 public class Arm extends SubsystemBase {
   SparkMax armMotor = new SparkMax(Constants.ARM_MOTOR, MotorType.kBrushless );
   RelativeEncoder armEncoder;
-  Settings settings;
   double currentSetpoint;
   PIDController pid = new PIDController(6, 0, 0.4);
   ArmFeedforward feedforward = new ArmFeedforward(0, 0.17, 2.50, 0.02);
@@ -39,9 +37,8 @@ public class Arm extends SubsystemBase {
   BooleanLogEntry overrideLog = Util.createBooleanLog("arm/override");
 
   /** Creates a new Arm. */
-  public Arm( Settings settings ) {
+  public Arm() {
     // Set instance variables.
-    this.settings = settings;
     this.armEncoder = armMotor.getEncoder();
 
     // Configure the arm motor.
