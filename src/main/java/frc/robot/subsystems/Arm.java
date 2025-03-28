@@ -31,6 +31,8 @@ public class Arm extends SubsystemBase {
 
   public boolean manualOverride = false;
 
+  public final double ARM_OFFSET = 0.0; // In degrees
+
   DoubleLogEntry angleLog = Util.createDoubleLog("arm/angle");
   DoubleLogEntry setpointLog = Util.createDoubleLog("arm/setpoint");
   DoubleLogEntry velocityLog = Util.createDoubleLog("arm/velocityLog");
@@ -79,7 +81,7 @@ public class Arm extends SubsystemBase {
   public double getAngle() {
     
     // Return the angle.
-    return armMotor.getEncoder().getPosition();
+    return armMotor.getEncoder().getPosition() - ARM_OFFSET;
   }
 
   @Override
@@ -89,7 +91,7 @@ public class Arm extends SubsystemBase {
     double ffCalc = feedforward.calculate(pid.getSetpoint(), pidCalc);
     SmartDashboard.putNumber("arm/FF Output", ffCalc);
 
-    pidCalc = MathUtil.clamp(pidCalc, -2, 2);
+    pidCalc = MathUtil.clamp(pidCalc, -4, 4);
 
     // armMotor.setVoltage(pidCalc - Math.cos(getAngle()));
     armMotor.setVoltage(pidCalc);

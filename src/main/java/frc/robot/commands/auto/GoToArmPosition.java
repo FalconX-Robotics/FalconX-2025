@@ -1,4 +1,4 @@
-package frc.robot.commands.swervedrive.auto;
+package frc.robot.commands.auto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,28 +10,26 @@ public class GoToArmPosition extends Command {
     private Arm arm;
     private Elevator elevator;
     
-    private ArmElevatorPosition position;
+    private Position position;
 
-    public static enum ArmElevatorPosition {
-        INTAKE(0,0.7144467287606601),
-        L1(0,0.12689228997496202),
-        L2(-0.03318296592268683,0.30161103997496275),
-        L3(0,0.12805198518303562),
-        L4(-0.2593490261170599,-0.05843855526844039),
-        HIGH_ALGAE(-0.04734627579649297,0.2903718682613724),
-        LOW_ALGAE(-0.10179523018499223,0.09065311826137237),
-        TRAVEL(0,1.6544071637908695);
+    public static enum Position {
+        INTAKE(0,-2.8256309032440186),
+        L2(0,-2.3802669048309326),
+        L3(-48.59504699707031,-2.049252986907959),
+        LO_ALGAE(0,-2.5969302654266357),
+        HI_ALGAE(-44.28524398803711,-2.5969302654266357),
+        TRAVEL(0,1.5015838146209717);
 
         public final double height;
         public final double angle;
 
-        ArmElevatorPosition(double elevator, double arm) {
+        Position(double elevator, double arm) {
             height = elevator;
             angle = arm;
         }
     }
 
-    public GoToArmPosition(ArmElevatorPosition position, Arm arm, Elevator elevator) {
+    public GoToArmPosition(Position position, Arm arm, Elevator elevator) {
         this.position = position;
         this.arm = arm;
         this.elevator = elevator;

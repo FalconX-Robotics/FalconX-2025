@@ -25,6 +25,8 @@ public class GoToPosition extends Command {
         this.level = level;
         this.elevator = elevator;
         addRequirements(elevator);
+        
+        //values in degrees
 
         levels.put(Level.LEVEL_1, 18.0);
         levels.put(Level.LEVEL_2, 31.875);

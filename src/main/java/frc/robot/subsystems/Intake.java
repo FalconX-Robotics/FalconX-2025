@@ -48,7 +48,7 @@ public class Intake extends SubsystemBase{
     }
 
     public void set(double speed) {
-        setPrimaryMotor(speed);
-        setFeeder(speed/4);
+        setPrimaryMotor(-speed);
+        setFeeder(speed/3);
     }
 }

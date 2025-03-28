@@ -13,6 +13,7 @@ import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,16 +22,16 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.arm.MoveArm;
+import frc.robot.commands.auto.GoToArmPosition;
+import frc.robot.commands.auto.GoToArmPosition.Position;
 import frc.robot.commands.climb.ClimbCommand;
 import frc.robot.commands.elevator.ManualElevator;
-import frc.robot.commands.swervedrive.arm.MoveArm;
-import frc.robot.commands.swervedrive.auto.GoToArmPosition;
-import frc.robot.commands.swervedrive.auto.GoToArmPosition.ArmElevatorPosition;
+import frc.robot.commands.intake.GrabCoral;
+import frc.robot.commands.intake.Release;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDrive;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteFieldDrive;
 import frc.robot.commands.swervedrive.drivebase.ChangeSpeed;
-import frc.robot.commands.swervedrive.intake.GrabCoral;
-import frc.robot.commands.swervedrive.intake.Release;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -41,6 +42,7 @@ import frc.robot.util.Util;
 import java.time.LocalDateTime;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -144,6 +146,13 @@ public class RobotContainer
     // NamedCommands.registerCommand("Outtake", new Release(intake, settings));
     // NamedCommands.registerCommand("Arm L2", new GoToArmPosition(Position.L2, arm, elevator));
     swerve.setupPathPlanner();
+    NamedCommands.registerCommand("Go To L3", new GoToArmPosition(Position.L3, arm, elevator));
+    NamedCommands.registerCommand("Go to L2", new GoToArmPosition(Position.L2, arm, elevator));
+    NamedCommands.registerCommand("Outtake", new Release(intake, settings));
+    NamedCommands.registerCommand("Intake Position", new GoToArmPosition(Position.INTAKE, arm, elevator));
+    NamedCommands.registerCommand("Travel", new GoToArmPosition(Position.TRAVEL, arm, elevator));
+    NamedCommands.registerCommand("Intake", new GrabCoral(intake, settings));
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     // Configure thse trigger bindings
@@ -212,10 +221,15 @@ public class RobotContainer
     
     settings.armSettings.climbButton.whileTrue(new ClimbCommand(climber, swerve, false, settings));
     settings.armSettings.unClimbButton.whileTrue(new ClimbCommand(climber, swerve, true, settings));
-    settings.armSettings.moveToL2.whileTrue(new GoToArmPosition(ArmElevatorPosition.L2, arm, elevator));
-    settings.armSettings.moveToL3.whileTrue(new GoToArmPosition(ArmElevatorPosition.L3, arm, elevator));
+    settings.armSettings.moveToL2.whileTrue(new GoToArmPosition(Position.L2, arm, elevator));
+    settings.armSettings.moveToL3.whileTrue(new GoToArmPosition(Position.L3, arm, elevator));
 
-    settings.armSettings.travelButton.whileTrue(new GoToArmPosition(ArmElevatorPosition.TRAVEL, arm, elevator));
+    settings.armSettings.travelButton.whileTrue(new GoToArmPosition(Position.TRAVEL, arm, elevator));
+    settings.armSettings.moveToIntake.whileTrue(new GoToArmPosition(Position.INTAKE, arm, elevator));
+    settings.armSettings.moveToL2.whileTrue(new GoToArmPosition(Position.L2, arm, elevator));
+    settings.armSettings.moveToL3.whileTrue(new GoToArmPosition(Position.L3, arm, elevator));
+    settings.armSettings.moveToLoAlgae.whileTrue(new GoToArmPosition(Position.LO_ALGAE, arm, elevator));
+    settings.armSettings.moveToHiAlgae.whileTrue(new GoToArmPosition(Position.HI_ALGAE, arm, elevator));
 
     elevator.setDefaultCommand(new ManualElevator(elevator, operatorXbox));
   }

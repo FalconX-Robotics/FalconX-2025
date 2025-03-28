@@ -57,8 +57,12 @@ public class Settings {
 
         public Trigger climbButton = operatorController.leftBumper();
         public Trigger unClimbButton = operatorController.rightBumper();
-        public Trigger moveToL2 = operatorController.rightStick();
-        public Trigger moveToL3 = operatorController.leftStick();
+
+        public Trigger moveToL2 = operatorController.povDown();
+        public Trigger moveToL3 = operatorController.povUp();
+        public Trigger moveToIntake = operatorController.a();
+        public Trigger moveToLoAlgae = operatorController.leftTrigger();
+        public Trigger moveToHiAlgae = operatorController.rightTrigger();
 
         public final double intakeSpeed = -1/3.0;
         public final double releaseSpeed = 0.5;

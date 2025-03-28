@@ -13,6 +13,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -45,6 +46,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.commands.auto.GoToArmPosition;
+import frc.robot.commands.auto.GoToArmPosition.Position;
 import frc.robot.util.Elastic;
 import frc.robot.util.Elastic.Notification.NotificationLevel;
 import swervelib.SwerveController;
@@ -291,6 +294,7 @@ public class SwerveSubsystem extends SubsystemBase
           // Reference to this subsystem to set requirements
                             );
           Pathfinding.setPathfinder(new LocalADStar());
+
     } catch (Exception e) {
 
     }

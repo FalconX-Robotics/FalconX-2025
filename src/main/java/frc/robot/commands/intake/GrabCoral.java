@@ -1,4 +1,4 @@
-package frc.robot.commands.swervedrive.intake;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -10,10 +10,18 @@ public class GrabCoral extends Command {
     Settings settings;
     CommandXboxController xbox;
 
+    @Deprecated
     public GrabCoral(Intake intake, Settings settings, CommandXboxController xbox) {
         this.settings = settings;
         this.intake = intake;
         this.xbox = xbox;
+        addRequirements(intake);
+        setName("GrabCoral");
+    }
+
+    public GrabCoral(Intake intake, Settings settings) {
+        this.settings = settings;
+        this.intake = intake;
         addRequirements(intake);
         setName("GrabCoral");
     }

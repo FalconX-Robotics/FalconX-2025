@@ -22,7 +22,7 @@ import frc.robot.util.*;
  * Elevator
  */
 public class Elevator extends SubsystemBase {
-    PIDController pid = new PIDController(1, 0, 0.); 
+    PIDController pid = new PIDController(0.1, 0, 0.); 
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0, 0);
     double kG = 0;
 
@@ -59,11 +59,12 @@ public class Elevator extends SubsystemBase {
             motorOut = Math.max(0.1, motorOut);
         }
 
-        motorOut = MathUtil.clamp(motorOut, -0.4, 0.4);
+        motorOut = MathUtil.clamp(motorOut, -0.8, 0.8);
 
         SmartDashboard.putBoolean("Bottom Limit", !bottomLimitSwitch.get());
-        SmartDashboard.putBoolean("Upper Limit", topLimitSwitch.get());
+        SmartDashboard.putBoolean("Upper Limit", atLimit());
         SmartDashboard.putNumber("Elevator Speed", elevatorSparkMax.get());
+        SmartDashboard.putNumber("Elevator Out", motorOut);
 
         elevatorSparkMax.set(motorOut);
 
@@ -79,15 +80,16 @@ public class Elevator extends SubsystemBase {
         pid.setSetpoint(position);
     }
     public void setInput(double input) {
-        pid.setSetpoint(pid.getSetpoint() + input/40.0);
+        pid.setSetpoint(pid.getSetpoint() + input * 2.5/4.0);
     }
 
     //idk what units these are
     public double getHeight() {
-        return elevatorSparkMax.getAbsoluteEncoder().getPosition();
+        return elevatorSparkMax.getEncoder().getPosition();
     }
 
     public boolean atLimit() {
-        return topLimitSwitch.get();
+        return false;
+        // return topLimitSwitch.get();
     }
 }

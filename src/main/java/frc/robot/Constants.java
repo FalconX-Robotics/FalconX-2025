@@ -50,7 +50,7 @@ public final class Constants
 
   public static final Pose2d STARTING_POSE = new Pose2d();
 
-  public static final int CORAL_SENSOR = 9;
+  public static final int CORAL_SENSOR = 1;
   public static final int ARM_MOTOR = 20;
   public static final int FEEDER_MOTOR = 21;
   public static final int INTAKE_MOTOR = 22;
@@ -59,7 +59,7 @@ public final class Constants
 
   public static final int LED_PORT = 1;
   public static final int ELEVATOR_HIGH_SWITCH = 5;
-  public static final int ELEVATOR_LOW_SWITCH = 8;
+  public static final int ELEVATOR_LOW_SWITCH = 0;
 
   public static final double ARM_CONVERSION_FACTOR = (1.0/(6.21430317958)) * Math.PI/2;
 
