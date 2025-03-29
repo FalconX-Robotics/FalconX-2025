@@ -36,7 +36,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Outtake"
+                  "name": "Outtake Slow"
                 }
               },
               {
@@ -71,6 +71,12 @@
           "type": "path",
           "data": {
             "pathName": "2R to Source"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {

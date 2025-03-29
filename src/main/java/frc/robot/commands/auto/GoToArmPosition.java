@@ -33,6 +33,7 @@ public class GoToArmPosition extends Command {
         this.position = position;
         this.arm = arm;
         this.elevator = elevator;
+        // withTimeout(0.5); // uncomment to try time limit
         addRequirements(arm, elevator);
     }
 

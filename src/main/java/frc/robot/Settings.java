@@ -7,18 +7,18 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Settings {
     private CommandXboxController driveController, operatorController;
-    public OperatorSettings armSettings;
+    public OperatorSettings operatorSettings;
     public DriverSettings driverSettings;
 
     public Settings (CommandXboxController driveController, CommandXboxController operatorController) {
         this.operatorController = operatorController;
         this.driveController = driveController;
 
-        armSettings = new OperatorSettings();
+        operatorSettings = new OperatorSettings();
         driverSettings = new DriverSettings();
     }
     public class DriverSettings {
-        public Trigger speedModeButton = driveController.rightTrigger();
+        public Trigger speedModeButton = new Trigger(()-> {return driveController.getRightTriggerAxis() > 0.5;});
         public Trigger invertButton = driveController.start();
         public boolean inverted = false;
 

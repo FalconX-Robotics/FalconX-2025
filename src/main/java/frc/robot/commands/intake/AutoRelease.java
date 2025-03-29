@@ -20,7 +20,7 @@ public class AutoRelease extends Command {
     @Override
     public void execute() {
         if (vision.linedUpReef()) {
-            intake.set(settings.armSettings.releaseSpeed);
+            intake.set(settings.operatorSettings.releaseSpeed);
         }
     }
     

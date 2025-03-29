@@ -25,8 +25,8 @@ public class ClimbCommand extends Command {
     @Override
     public void initialize() {
         swerve.climbing = true;
-        if (reversed) climb.motorRun(-settings.armSettings.climbSpeed);
-        else          climb.motorRun(settings.armSettings.climbSpeed);
+        if (reversed) climb.motorRun(-settings.operatorSettings.climbSpeed);
+        else          climb.motorRun(settings.operatorSettings.climbSpeed);
     }
 
     @Override

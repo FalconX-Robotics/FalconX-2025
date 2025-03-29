@@ -149,6 +149,7 @@ public class RobotContainer
     NamedCommands.registerCommand("Go To L3", new GoToArmPosition(Position.L3, arm, elevator));
     NamedCommands.registerCommand("Go to L2", new GoToArmPosition(Position.L2, arm, elevator));
     NamedCommands.registerCommand("Outtake", new Release(intake, settings));
+    NamedCommands.registerCommand("Outtake Slow", new Release(intake, 0.2));
     NamedCommands.registerCommand("Intake Position", new GoToArmPosition(Position.INTAKE, arm, elevator));
     NamedCommands.registerCommand("Travel", new GoToArmPosition(Position.TRAVEL, arm, elevator));
     NamedCommands.registerCommand("Intake", new GrabCoral(intake, settings));
@@ -215,21 +216,21 @@ public class RobotContainer
     swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
 
     // settings.armSettings.overrideArm.whileTrue(new ChangeIntakeAngle(arm, operatorXbox));
-    settings.armSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings, operatorXbox));
-    settings.armSettings.releaseButton.whileTrue(new Release(intake, settings));
+    settings.operatorSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings, operatorXbox));
+    settings.operatorSettings.releaseButton.whileTrue(new Release(intake, settings));
     arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
     
-    settings.armSettings.climbButton.whileTrue(new ClimbCommand(climber, swerve, false, settings));
-    settings.armSettings.unClimbButton.whileTrue(new ClimbCommand(climber, swerve, true, settings));
-    settings.armSettings.moveToL2.whileTrue(new GoToArmPosition(Position.L2, arm, elevator));
-    settings.armSettings.moveToL3.whileTrue(new GoToArmPosition(Position.L3, arm, elevator));
+    settings.operatorSettings.climbButton.whileTrue(new ClimbCommand(climber, swerve, false, settings));
+    settings.operatorSettings.unClimbButton.whileTrue(new ClimbCommand(climber, swerve, true, settings));
+    settings.operatorSettings.moveToL2.whileTrue(new GoToArmPosition(Position.L2, arm, elevator));
+    settings.operatorSettings.moveToL3.whileTrue(new GoToArmPosition(Position.L3, arm, elevator));
 
-    settings.armSettings.travelButton.whileTrue(new GoToArmPosition(Position.TRAVEL, arm, elevator));
-    settings.armSettings.moveToIntake.whileTrue(new GoToArmPosition(Position.INTAKE, arm, elevator));
-    settings.armSettings.moveToL2.whileTrue(new GoToArmPosition(Position.L2, arm, elevator));
-    settings.armSettings.moveToL3.whileTrue(new GoToArmPosition(Position.L3, arm, elevator));
-    settings.armSettings.moveToLoAlgae.whileTrue(new GoToArmPosition(Position.LO_ALGAE, arm, elevator));
-    settings.armSettings.moveToHiAlgae.whileTrue(new GoToArmPosition(Position.HI_ALGAE, arm, elevator));
+    settings.operatorSettings.travelButton.whileTrue(new GoToArmPosition(Position.TRAVEL, arm, elevator));
+    settings.operatorSettings.moveToIntake.whileTrue(new GoToArmPosition(Position.INTAKE, arm, elevator));
+    settings.operatorSettings.moveToL2.whileTrue(new GoToArmPosition(Position.L2, arm, elevator));
+    settings.operatorSettings.moveToL3.whileTrue(new GoToArmPosition(Position.L3, arm, elevator));
+    settings.operatorSettings.moveToLoAlgae.whileTrue(new GoToArmPosition(Position.LO_ALGAE, arm, elevator));
+    settings.operatorSettings.moveToHiAlgae.whileTrue(new GoToArmPosition(Position.HI_ALGAE, arm, elevator));
 
     elevator.setDefaultCommand(new ManualElevator(elevator, operatorXbox));
   }

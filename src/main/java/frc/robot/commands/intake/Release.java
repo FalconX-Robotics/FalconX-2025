@@ -8,16 +8,26 @@ public class Release extends Command {
     Intake intake;
     Settings settings;
 
+    double outSpeed;
+
     public Release(Intake intake, Settings settings){
         this.intake = intake;
         this.settings = settings;
+        this.outSpeed = settings.operatorSettings.releaseSpeed;
+        addRequirements(intake);
+        setName("Release");
+    }
+
+    public Release(Intake intake, double speed) {
+        this.intake = intake;
+        this.outSpeed = speed;
         addRequirements(intake);
         setName("Release");
     }
 
     @Override
     public void execute() {
-        intake.set(settings.armSettings.releaseSpeed);
+        intake.set(outSpeed);
     }
 
     @Override
@@ -27,6 +37,6 @@ public class Release extends Command {
 
     @Override
     public boolean isFinished() {
-        return settings.armSettings.releaseSpeed < 0;
+        return outSpeed < 0;
     }
 }

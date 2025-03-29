@@ -33,7 +33,7 @@ public class GrabCoral extends Command {
 
     @Override
     public void execute() {
-        intake.set(settings.armSettings.intakeSpeed);
+        intake.set(settings.operatorSettings.intakeSpeed);
     }
 
     @Override
@@ -45,6 +45,6 @@ public class GrabCoral extends Command {
 
     @Override
     public boolean isFinished() {
-        return settings.armSettings.intakeSpeed > 0;
+        return settings.operatorSettings.intakeSpeed > 0;
     }
 }
