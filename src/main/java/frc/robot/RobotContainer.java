@@ -149,7 +149,7 @@ public class RobotContainer
     NamedCommands.registerCommand("Go To L3", new GoToArmPosition(Position.L3, arm, elevator));
     NamedCommands.registerCommand("Go to L2", new GoToArmPosition(Position.L2, arm, elevator));
     NamedCommands.registerCommand("Outtake", new Release(intake, settings));
-    NamedCommands.registerCommand("Outtake Slow", new Release(intake, 0.2));
+    NamedCommands.registerCommand("Outtake Slow", new Release(intake, 0.35));
     NamedCommands.registerCommand("Intake Position", new GoToArmPosition(Position.INTAKE, arm, elevator));
     NamedCommands.registerCommand("Travel", new GoToArmPosition(Position.TRAVEL, arm, elevator));
     NamedCommands.registerCommand("Intake", new GrabCoral(intake, settings));
