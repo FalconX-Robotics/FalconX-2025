@@ -5,26 +5,17 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Settings;
 import frc.robot.subsystems.Intake;
 
-public class GrabCoral extends Command {
+public class RunIntake extends Command {
+    double speed;
     Intake intake;
-    Settings settings;
-    CommandXboxController xbox;
 
-    public GrabCoral(Intake intake, Settings settings, CommandXboxController xbox) {
-        this.settings = settings;
+    public RunIntake(Intake intake, double speed) {
         this.intake = intake;
-        this.xbox = xbox;
+        this.speed = speed;
         addRequirements(intake);
         setName("GrabCoral");
     }
-
-    public GrabCoral(Intake intake, Settings settings) {
-        this.settings = settings;
-        this.intake = intake;
-        addRequirements(intake);
-        setName("GrabCoral");
-    }
-
+    
     @Override
     public void initialize() {
         intake.intaking = true;
@@ -32,7 +23,7 @@ public class GrabCoral extends Command {
 
     @Override
     public void execute() {
-        intake.set(settings.operatorSettings.intakeSpeed);
+        intake.set(speed);
     }
 
     @Override
@@ -44,6 +35,6 @@ public class GrabCoral extends Command {
 
     @Override
     public boolean isFinished() {
-        return settings.operatorSettings.intakeSpeed > 0;
+        return false;
     }
 }

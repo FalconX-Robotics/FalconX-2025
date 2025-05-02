@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -51,20 +52,23 @@ import com.pathplanner.lib.auto.NamedCommands;
  */
 public class RobotContainer
 {
+
+  public static RobotContainer INSTANCE;
+
   public SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
   final CommandXboxController operatorXbox = new CommandXboxController(1);
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  public final SwerveSubsystem swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
-  private final Settings settings = new Settings(driverXbox, operatorXbox);
-  private final Intake intake = new Intake();
-  private final Arm arm = new Arm();
-  private final Elevator elevator = new Elevator();
+  public final Settings settings = new Settings(driverXbox, operatorXbox);
+  public final Intake intake = new Intake();
+  public final Arm arm = new Arm();
+  public final Elevator elevator = new Elevator();
   
-  private final Climber climber = new Climber();
+  public final Climber climber = new Climber();
 
   
 
@@ -141,6 +145,7 @@ public class RobotContainer
   
   public RobotContainer()
   {
+    RobotContainer.INSTANCE = this;
     Util.setStartTime(LocalDateTime.now());
     DataLogManager.start(Filesystem.getOperatingDirectory() + "/logs", Util.getLogFilename());
     // NamedCommands.registerCommand("Outtake", new Release(intake, settings));
