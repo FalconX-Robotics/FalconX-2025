@@ -8,15 +8,6 @@ import frc.robot.subsystems.Intake;
 public class GrabCoral extends Command {
     Intake intake;
     Settings settings;
-    CommandXboxController xbox;
-
-    public GrabCoral(Intake intake, Settings settings, CommandXboxController xbox) {
-        this.settings = settings;
-        this.intake = intake;
-        this.xbox = xbox;
-        addRequirements(intake);
-        setName("GrabCoral");
-    }
 
     public GrabCoral(Intake intake, Settings settings) {
         this.settings = settings;
@@ -37,13 +28,14 @@ public class GrabCoral extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intake.setPrimaryMotor(0);
-        intake.setFeeder(0);
-        intake.intaking = false;
+        // intake.setPrimaryMotor(0);
+        // intake.setFeeder(0);
+        // intake.intaking = false;
     }
 
     @Override
     public boolean isFinished() {
-        return settings.operatorSettings.intakeSpeed > 0;
+        return true;
+        // return settings.operatorSettings.intakeSpeed > 0;
     }
 }

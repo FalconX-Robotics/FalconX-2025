@@ -15,7 +15,7 @@ public class RunIntake extends Command {
         addRequirements(intake);
         setName("GrabCoral");
     }
-    
+
     @Override
     public void initialize() {
         intake.intaking = true;
@@ -28,13 +28,13 @@ public class RunIntake extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intake.setPrimaryMotor(0);
-        intake.setFeeder(0);
-        intake.intaking = false;
+        // intake.setPrimaryMotor(0);
+        // intake.setFeeder(0);
+        // intake.intaking = false;
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return true;
     }
 }

@@ -20,6 +20,7 @@ public class Settings {
     public class DriverSettings {
         public Trigger speedModeButton = new Trigger(()-> {return driveController.getRightTriggerAxis() > 0.5;});
         public Trigger invertButton = driveController.start();
+        public Trigger resetAuto = driveController.y();
         public boolean inverted = false;
 
         public double getLeftX() {

@@ -100,7 +100,6 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(File directory)
   {
-    
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     //  In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
@@ -120,7 +119,7 @@ public class SwerveSubsystem extends SubsystemBase
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try
     {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, Constants.STARTING_POSE);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, Constants.START_POSE);
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
@@ -152,7 +151,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
   {
-    swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Constants.MAX_SPEED, Constants.STARTING_POSE);
+    swerveDrive = new SwerveDrive(driveCfg, controllerCfg, Constants.MAX_SPEED, Constants.START_POSE);
   }
 
   /**
@@ -409,6 +408,12 @@ public class SwerveSubsystem extends SubsystemBase
       Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(xSpeed,
                                                                                  ySpeed), 0.8);
       // Make the robot move
+      double inputAngle;
+      if (scaledInputs.getX() == 0 && scaledInputs.getY() == 0) {
+        inputAngle = 0;
+      }else{
+        inputAngle = scaledInputs.getAngle().getDegrees();
+      }
       SmartDashboard.putNumber("Controller Angle", scaledInputs.getAngle().getDegrees());
       SmartDashboard.putNumber("Controller X Speed", scaledInputs.getX());
       SmartDashboard.putNumber("Controller Y Speed", scaledInputs.getY());

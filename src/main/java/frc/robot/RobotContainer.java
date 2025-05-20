@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.auto.AutoParser;
 import frc.robot.commands.arm.MoveArm;
 import frc.robot.commands.auto.GoToArmPosition;
 import frc.robot.commands.auto.GoToArmPosition.Position;
@@ -52,7 +53,6 @@ import com.pathplanner.lib.auto.NamedCommands;
  */
 public class RobotContainer
 {
-
   public static RobotContainer INSTANCE;
 
   public SendableChooser<Command> autoChooser = new SendableChooser<>();
@@ -70,34 +70,10 @@ public class RobotContainer
   
   public final Climber climber = new Climber();
 
-  
+  public final Command autoCommand;
 
   UsbCamera intakeCam;
-  CvSink cvSink;
-  CvSource camOutput;
-
-
-  Thread camThread;
-  // Applies deadbands and inverts controls because joysticks
-  // are back-right positive while robot
-  // controls are front-left positive
-  // left stick controls translation
-  // right stick controls the rotational velocity 
-  // buttons are quick rotation positions to different ways to face
-  // WARNING: default buttons are on the same buttons as the ones defined in configureBindings
-  // AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(swerve,
-                                                                //  () -> -MathUtil.applyDeadband(driverXbox.getLeftY(),
-                                                                //                                OperatorConstants.LEFT_Y_DEADBAND),
-                                                                //  () -> -MathUtil.applyDeadband(driverXbox.getLeftX(),
-                                                                //                                OperatorConstants.LEFT_X_DEADBAND),
-                                                                //  () -> -MathUtil.applyDeadband(driverXbox.getRightX(),
-                                                                //                                OperatorConstants.RIGHT_X_DEADBAND),
-                                                                //  driverXbox.getHID()::getYButtonPressed,
-                                                                //  driverXbox.getHID()::getAButtonPressed,
-                                                                //  driverXbox.getHID()::getXButtonPressed,
-                                                                //  driverXbox.getHID()::getBButtonPressed);
-
-
+  
   AbsoluteFieldDrive absFieldDrive = new AbsoluteFieldDrive(swerve, 
   () -> MathUtil.applyDeadband(settings.driverSettings.getLeftY(), OperatorConstants.LEFT_Y_DEADBAND),
   () -> MathUtil.applyDeadband(-settings.driverSettings.getLeftX(), OperatorConstants.LEFT_X_DEADBAND), 
@@ -139,19 +115,14 @@ public class RobotContainer
       () -> MathUtil.applyDeadband(settings.driverSettings.getLeftX(), OperatorConstants.LEFT_X_DEADBAND),
       () -> driverXbox.getRawAxis(2));
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  
+
   public RobotContainer()
   {
     RobotContainer.INSTANCE = this;
     Util.setStartTime(LocalDateTime.now());
     DataLogManager.start(Filesystem.getOperatingDirectory() + "/logs", Util.getLogFilename());
     // NamedCommands.registerCommand("Outtake", new Release(intake, settings));
-    // NamedCommands.registerCommand("Arm L2", new GoToArmPosition(Position.L2, arm, elevator));
-    swerve.setupPathPlanner();
-    NamedCommands.registerCommand("Go To L3", new GoToArmPosition(Position.L3, arm, elevator));
+    // NamedCommands.registerCommand("Arm L2", new GoToArmPosition(Position.L2, arm, elevator));    NamedCommands.registerCommand("Go To L3", new GoToArmPosition(Position.L3, arm, elevator));
     NamedCommands.registerCommand("Go to L2", new GoToArmPosition(Position.L2, arm, elevator));
     NamedCommands.registerCommand("Outtake", new Release(intake, settings));
     NamedCommands.registerCommand("Outtake Slow", new Release(intake, 0.35));
@@ -159,36 +130,17 @@ public class RobotContainer
     NamedCommands.registerCommand("Travel", new GoToArmPosition(Position.TRAVEL, arm, elevator));
     NamedCommands.registerCommand("Intake", new GrabCoral(intake, settings));
 
-    autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    swerve.setupPathPlanner();
     // Configure thse trigger bindings
+    autoCommand = AutoParser.parseAuto(Filesystem.getDeployDirectory() + "/auto.mfd");
     configureBindings();
-
-
-    intakeCam = CameraServer.startAutomaticCapture();
-    intakeCam.setFPS(20);
-    // intakeCam.setResolution(640, 480);
-    // cvSink = CameraServer.getVideo();
-    // camOutput = CameraServer.putVideo("IntakeCam", 640, 480);
-
-    // camThread = new Thread(()->{
-    //   while(true) {
-    //     Mat image = new Mat();
-    //     cvSink.grabFrame(image);
-    //     Mat transposed = new Mat();
-    //     Core.transpose(image, transposed);
-    //     Mat rotated = new Mat();
-    //     Core.flip(transposed, rotated, 1);
-    //     output.putFrame(image);
-    //     System.out.println("thread running");
-    //   }
-    //   // SmartDashboard.putString("suildghjhdshjk", "asjkdbfsj");
-    //   // Point center = new Point(320, 240);
-    //   // Mat rotation = Imgproc.getRotationMatrix2D(center, -90, 1);
-    //   // Imgproc.warpAffine(image, rotation, image, new Size(640, 480));
-    // });
-    // camThread.setDaemon(true);
-    // camThread.start();
+    
+    autoChooser = AutoBuilder.buildAutoChooser();
+    if (!Robot.isSimulation()) {
+      intakeCam = CameraServer.startAutomaticCapture();
+      intakeCam.setFPS(20);
+    }
   }
 
   public void robotPeriodic() {
@@ -218,10 +170,11 @@ public class RobotContainer
     // driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     settings.driverSettings.speedModeButton.whileTrue(driveInputs);
     settings.driverSettings.invertButton.onTrue(Commands.runOnce(()-> {settings.driverSettings.inverted = !settings.driverSettings.inverted;}, climber));
+    // settings.driverSettings.resetAuto.onTrue(this.autoCommand);
     swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
 
     // settings.armSettings.overrideArm.whileTrue(new ChangeIntakeAngle(arm, operatorXbox));
-    settings.operatorSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings, operatorXbox));
+    settings.operatorSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings));
     settings.operatorSettings.releaseButton.whileTrue(new Release(intake, settings));
     arm.setDefaultCommand(new MoveArm(arm, operatorXbox));
     
@@ -247,8 +200,9 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
+    return this.autoCommand;
     // returfn swerve.driveAndSpin();
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
     // return drivebase.driveToDistanceCommand(1, 0.1);
     // return drivebase.driveToDistanceCommand(200, 0.5);
     // An example command will be run in autonomous
@@ -263,6 +217,7 @@ public class RobotContainer
 
   public void setMotorBrake(boolean brake)
   {
-    swerve.setMotorBrake(brake);
+
+    // swerve.setMotorBrake(brake);
   }
 }

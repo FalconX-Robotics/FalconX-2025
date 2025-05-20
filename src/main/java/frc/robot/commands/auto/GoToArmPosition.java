@@ -45,9 +45,8 @@ public class GoToArmPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        return MathUtil.isNear(position.angle, arm.getAngle(), 0.01) &&
-               MathUtil.isNear(position.height, elevator.getHeight(), 0.01); 
-            //    &&
-            //    true;
+        return true;
+        // return MathUtil.isNear(position.angle, arm.getAngle(), 0.01) &&
+        //        MathUtil.isNear(position.height, elevator.getHeight(), 0.01);
     }
 }

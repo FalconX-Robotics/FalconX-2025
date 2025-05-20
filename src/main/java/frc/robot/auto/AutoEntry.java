@@ -9,11 +9,12 @@ public abstract class AutoEntry {
     protected ArrayList<Object> parameters = new ArrayList<>();
     protected String name;
 
-    public AutoEntry(String name, Object... params) {
+    public AutoEntry(String name, ArrayList<Object> params) {
         this.name = name;
         for (Object param : params) {
             this.parameters.add(param);
         }
+        safetyCheck();
     }
 
     public boolean safetyCheck() {

@@ -1,0 +1,15 @@
+arm_position [0-3]
+ - 0: Down
+ - 1: L2
+ - 2: L3
+ - 3: Source
+
+go_to_position [left, right, source, start]
+
+print [args]
+wait [seconds]
+intake_off
+intake_on
+shoot
+
+# comment

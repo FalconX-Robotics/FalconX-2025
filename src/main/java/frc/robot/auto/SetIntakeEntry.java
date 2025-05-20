@@ -1,19 +1,21 @@
 package frc.robot.auto;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.commands.intake.RunIntake;
 
 public class SetIntakeEntry extends AutoEntry{
-    public SetIntakeEntry(String name, Object... params) throws Exception {
+    public SetIntakeEntry(String name, ArrayList<Object> params) throws Exception {
         super(name, params);
-        if(params.length != 1) {
+        if(params.size() != 1) {
             throw new Exception("Invalid intake param count");
         }
-        if(!(params[0] instanceof Double)) {
-            throw new Exception("Invalid parameter type");
+        if(!(params.get(0) instanceof Double)) {
+            throw new Exception("Invalid parameter type: SetIntakeEntry parameter 1");
         }
-        this.speed = (Double) params[0];
+        this.speed = (Double) parameters.get(0);
     }
 
     private double maxSpeed = 1;

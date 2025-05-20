@@ -32,7 +32,7 @@ public class Release extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intake.set(0);
+        // intake.set(0);
     }
 
     @Override

@@ -12,7 +12,8 @@ import edu.wpi.first.util.datalog.IntegerLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import frc.robot.Robot;
 
-public class Util {private static LocalDateTime startTime;
+public class Util {
+    private static LocalDateTime startTime;
     
     public static String getLogFilename() {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").withZone(ZoneId.of("UTC"));

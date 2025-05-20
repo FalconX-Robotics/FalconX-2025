@@ -33,12 +33,13 @@ public final class Constants
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(10);
   public static final double MAX_ANGULAR_VELOCITY = 1 * Math.PI;
+  public static final double MAX_ANGULAR_ACCELERATION = 1 * Math.PI;
   public static final double CLAW_MASS = 0;
   public static final double CLAW_SPEED = 3;
 
   public static final Pose3d ROBOT_TO_CAMERA_POSE = new Pose3d(0, 0, 0.5, new Rotation3d());
 
-  public static final Pose2d START_POSE = new Pose2d(2, 2, Rotation2d.fromDegrees(0));
+  public static final Pose2d START_POSE = new Pose2d(1.427, 2.259, Rotation2d.fromDegrees(0));
 
   public static final double MAX_VISION_AMBIGUITY = 0.25;
       // Maximum speed of the robot in meters per second, used to limit acceleration.
@@ -47,8 +48,6 @@ public final class Constants
   public static final double MAX_RELEASE_SPEED = -1.0;
   public static final double MAX_ANGLE_UP_SPEED = 1.0;
   public static final double MAX_ANGLE_DOWN_SPEED = -1.0;
-
-  public static final Pose2d STARTING_POSE = new Pose2d();
 
   public static final int CORAL_SENSOR = 1;
   public static final int ARM_MOTOR = 20;
