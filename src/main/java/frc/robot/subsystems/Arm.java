@@ -26,7 +26,7 @@ public class Arm extends SubsystemBase {
   SparkMax armMotor = new SparkMax(Constants.ARM_MOTOR, MotorType.kBrushless );
   RelativeEncoder armEncoder;
   double currentSetpoint;
-  PIDController pid = new PIDController(6, 0, 0.4);
+  PIDController pid = new PIDController(5, 0, 0.4);
   ArmFeedforward feedforward = new ArmFeedforward(0, 0.17, 2.50, 0.02);
 
   public boolean manualOverride = false;
@@ -70,7 +70,7 @@ public class Arm extends SubsystemBase {
 
   public void setInput(double input) {
     input = MathUtil.applyDeadband(input, 0.1);
-    input *= 1.8 * 1.8 * 1.8 * 1.8;
+    input *= 1.8 * 1.8 * 1.8 * 1.8 * 1.3;
     pid.setSetpoint(pid.getSetpoint() + input * 0.01);
   }
 
