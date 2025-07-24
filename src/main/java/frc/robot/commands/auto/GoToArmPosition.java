@@ -12,6 +12,23 @@ public class GoToArmPosition extends Command {
     
     private Position position;
 
+    // public static enum Position {
+    //     INTAKE(0,-2.8256309032440186 * 3.0/4.0), // 
+    //     L2(0,-2.3802669048309326 * 3.0/4.0), // 
+    //     L3(-48.59504699707031,-2.049252986907959 * 3.0/4.0), // 
+    //     LO_ALGAE(0,-2.5969302654266357 * 3.0/4.0), // 
+    //     HI_ALGAE(-44.28524398803711,-2.5969302654266357 * 3.0/4.0), // 
+    //     TRAVEL(0,1.5015838146209717 * 3.0/4.0); // 
+
+    //     public final double height;
+    //     public final double angle;
+
+    //     Position(double elevator, double arm) {
+    //         height = elevator;
+    //         angle = arm;
+    //     }
+    // }
+
     public static enum Position {
         INTAKE(0,-2.8256309032440186),
         L2(0,-2.3802669048309326),

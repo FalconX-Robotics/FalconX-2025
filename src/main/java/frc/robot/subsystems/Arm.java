@@ -70,7 +70,7 @@ public class Arm extends SubsystemBase {
 
   public void setInput(double input) {
     input = MathUtil.applyDeadband(input, 0.1);
-    input *= 1.8 * 1.8 * 1.8 * 1.8 * 1.3;
+    input *= 1.8 * 1.8 * 1.8 * 1.8;
     pid.setSetpoint(pid.getSetpoint() + input * 0.01);
   }
 

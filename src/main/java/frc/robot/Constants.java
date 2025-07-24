@@ -51,11 +51,11 @@ public final class Constants
   public static final Pose2d STARTING_POSE = new Pose2d();
 
   public static final int CORAL_SENSOR = 1;
-  public static final int ARM_MOTOR = 40;
+  public static final int ARM_MOTOR = 20;
   public static final int FEEDER_MOTOR = 21;
   public static final int INTAKE_MOTOR = 22;
   public static final int ELEVATOR_MOTOR = 30;
-  public static final int CLIMB_ID = 20;
+  public static final int CLIMB_ID = 40;
 
   public static final int LED_PORT = 1;
   public static final int ELEVATOR_HIGH_SWITCH = 5;

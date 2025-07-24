@@ -113,7 +113,7 @@ public class RobotContainer
       () -> -settings.driverSettings.getRightY());
 
   Command driveInputs = new ParallelCommandGroup(new ChangeSpeed(swerve), swerve.driveInputs(()->-settings.driverSettings.getLeftY(), ()->-settings.driverSettings.getLeftX(), ()->-settings.driverSettings.getRightX()));
-
+  Command dhara = new ParallelCommandGroup(swerve.driveInputs(()->-settings.driverSettings.getLeftY(), ()->-settings.driverSettings.getLeftX(), ()->-settings.driverSettings.getRightX()));
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
@@ -213,7 +213,8 @@ public class RobotContainer
     // driverXbox.leftBumper().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
     settings.driverSettings.speedModeButton.whileTrue(driveInputs);
     settings.driverSettings.invertButton.onTrue(Commands.runOnce(()-> {settings.driverSettings.inverted = !settings.driverSettings.inverted;}, climber));
-    swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
+    // swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
+    swerve.setDefaultCommand(dhara);
 
     // settings.armSettings.overrideArm.whileTrue(new ChangeIntakeAngle(arm, operatorXbox));
     settings.operatorSettings.coralIntakeButton.whileTrue(new GrabCoral(intake, settings, operatorXbox));

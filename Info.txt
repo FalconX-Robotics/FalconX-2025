@@ -1,11 +1,5 @@
-y button elevator lock
-b button arm lock	# 1
+I dont know why everything has errors, just ignore it it works i guess.
 
+If the arm feels too slow/not snappy, adjust PID in Arm.java line 29
 
-			# 2
-	1     2
-        O --- O
-       /       \	# 3
-   6  O         O 3
-       \       /
-    5   O --- O 4
+vision bookmarks are on the Jorge Programming account on chrome
